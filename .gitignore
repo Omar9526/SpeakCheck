@@ -21,3 +21,4 @@ backend/media/
 backend/staticfiles/
 .pytest_cache/
 .coverage
+backend/db.sqlite3
