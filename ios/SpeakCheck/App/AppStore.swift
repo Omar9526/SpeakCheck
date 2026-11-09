@@ -12,11 +12,23 @@ final class AppStore {
         didSet { if persists { UserDefaults.standard.set(hasCompletedOnboarding, forKey: Keys.onboarding) } }
     }
 
+    /// Цель подготовки (экзамен/собеседование и дата). nil — ещё не выбрана.
+    var goal: PracticeGoal? {
+        didSet {
+            guard persists else { return }
+            UserDefaults.standard.set(try? JSONEncoder().encode(goal), forKey: Keys.goal)
+            ProfileSync.push(.init(goal: goal?.kind.rawValue))
+        }
+    }
+
     private let fileURL: URL
     private let persists: Bool
 
     private enum Keys {
         static let onboarding = "sc.onboardingDone"
+        static let goal = "sc.goal"
+        static let firstLaunch = "sc.firstLaunchAt"
+        static let firstScoreReported = "sc.firstScoreReported"
     }
 
     private struct Snapshot: Codable {
@@ -30,7 +42,13 @@ final class AppStore {
             .appendingPathComponent("SpeakCheck", isDirectory: true)
         fileURL = dir.appendingPathComponent("library.json")
         hasCompletedOnboarding = persists && UserDefaults.standard.bool(forKey: Keys.onboarding)
-        if persists { load() }
+        if persists {
+            goal = UserDefaults.standard.data(forKey: Keys.goal).flatMap { try? JSONDecoder().decode(PracticeGoal.self, from: $0) }
+            if UserDefaults.standard.object(forKey: Keys.firstLaunch) == nil {
+                UserDefaults.standard.set(Date.now, forKey: Keys.firstLaunch)
+            }
+            load()
+        }
     }
 
     // MARK: Queries
@@ -59,6 +77,12 @@ final class AppStore {
     }
 
     // MARK: Mutations
+
+    /// Документ готового ответа: уже начатый (без дубликатов) или новый.
+    func starterDocument(_ starter: StarterText) -> SCDocument {
+        if let existing = documents.first(where: { $0.title == starter.title && $0.source == .manual }) { return existing }
+        return add(StarterTexts.document(from: starter))
+    }
 
     @discardableResult
     func add(_ document: SCDocument) -> SCDocument {
@@ -89,6 +113,17 @@ final class AppStore {
         attempts.insert(attempt, at: 0)
         refreshProgress(documentID: attempt.documentID)
         save()
+        reportFirstScoreIfNeeded(attempt)
+    }
+
+    /// Метрика совета «первая оценка за 60 секунд»: один раз отправляем, сколько прошло от первого запуска.
+    private func reportFirstScoreIfNeeded(_ attempt: ReadingAttempt) {
+        let defaults = UserDefaults.standard
+        guard persists, attempt.status == .completed, !defaults.bool(forKey: Keys.firstScoreReported),
+              let firstLaunch = defaults.object(forKey: Keys.firstLaunch) as? Date else { return }
+        defaults.set(true, forKey: Keys.firstScoreReported)
+        let seconds = max(0, min(Int(Date.now.timeIntervalSince(firstLaunch)), 30 * 86400))
+        ProfileSync.push(.init(firstScoreSeconds: seconds))
     }
 
     func deleteAttempt(id: UUID) {
@@ -155,6 +190,7 @@ final class AppStore {
         store.documents = MockData.documents
         store.attempts = MockData.attempts
         store.hasCompletedOnboarding = true
+        store.goal = PracticeGoal(kind: .ielts, date: Calendar.current.date(byAdding: .day, value: 24, to: .now), dailyTarget: 3)
         return store
     }
     #endif

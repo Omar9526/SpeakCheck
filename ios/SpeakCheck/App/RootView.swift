@@ -18,6 +18,12 @@ struct RootView: View {
                     .tabItem { Label("Главная", systemImage: "house.fill") }
                     .tag(AppTab.home)
 
+                    NavigationStack(path: $router.tasksPath) {
+                        TasksView().routeDestinations()
+                    }
+                    .tabItem { Label("Задания", systemImage: "checklist") }
+                    .tag(AppTab.tasks)
+
                     NavigationStack(path: $router.progressPath) {
                         HistoryView().routeDestinations()
                     }
@@ -97,6 +103,7 @@ struct RootView: View {
             }
         case "sharecard": debugShareCard = true
         case "history": router.tab = .progress
+        case "tasks": router.tab = .tasks
         case "settings": router.tab = .profile
         default: break
         }

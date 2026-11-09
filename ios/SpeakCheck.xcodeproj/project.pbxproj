@@ -12,6 +12,7 @@
 		04B75F447A9BAE1623D2E173 /* ReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326F37873B217AA02B734A32 /* ReaderView.swift */; };
 		059AA20D47B0793F2757571F /* Buttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8727570FD8C4E38F6992072E /* Buttons.swift */; };
 		06512E8301A668227901BD42 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 254DC879185E52BB064C9889 /* OnboardingView.swift */; };
+		0821F277BAA36081E866276E /* TasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B749E57FA22E944E75138 /* TasksView.swift */; };
 		0C1B3B1C3C502D55E496691B /* AssessmentAggregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54B62C636732F773B16B108 /* AssessmentAggregator.swift */; };
 		0F756297C664845495032A89 /* RemoteAssessmentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D779201319B34D2824E235F /* RemoteAssessmentService.swift */; };
 		1791D7A8F9AD7F06474B984E /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83429FB01B65147D1F179085 /* ShareCardView.swift */; };
@@ -20,6 +21,7 @@
 		27E61F3D7D6255A74D765210 /* TextSegmenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88BC8287160B478F647E5C5D /* TextSegmenter.swift */; };
 		2844D68378F19884C13C4132 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726C25A999811B4A1710583C /* ShareSheet.swift */; };
 		293092EC3F8D7FFF5955CB73 /* ImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DFF44F90136037896AEF28 /* ImportView.swift */; };
+		39E76ADAB6FDEA64E83E85B5 /* PracticeGoal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DA70A5D04D41C71957F923 /* PracticeGoal.swift */; };
 		3C1CDFB3390B1C4793CEE29F /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01347A85A0F4A2EAF60C2858 /* ResultView.swift */; };
 		400064E33883C2555AEECB56 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F3B7F4E95BF5A0FDE986049A /* PrivacyInfo.xcprivacy */; };
 		424EEC6484FD3EACEF837C01 /* AppleNonce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C1ED1FC99EBD9B7A3E71EA /* AppleNonce.swift */; };
@@ -28,6 +30,8 @@
 		4C904DC84FEB110C1FEFFB5E /* TextReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92AA1763F1C86D144261114C /* TextReviewView.swift */; };
 		539AABB93AAB4009AB70DC29 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC82F4F4122512EDBAB7FEF2 /* Theme.swift */; };
 		670633C2E76BE8B43B97F73E /* WordDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CB60120B7E3827BCAE0E0 /* WordDetailView.swift */; };
+		6D81072B0058CD6A491B7819 /* DailyPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B814D2464E228392CA9B35 /* DailyPlan.swift */; };
+		6ECA3C7F98C7358BCF4A38E5 /* ProfileSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0580095B912E173DA3FE015E /* ProfileSync.swift */; };
 		76E1FAC7BC9BE00FDF664FAD /* Cards.swift in Sources */ = {isa = PBXBuildFile; fileRef = A85410364B5B5FAFB0A215C7 /* Cards.swift */; };
 		7996EB5EC2C515F7BBD072B6 /* TokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E60806D6756A4B76B5F3C /* TokenStore.swift */; };
 		7A207710A386E44CCCC94441 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5451AC89AA920ADA84CE8B24 /* Assets.xcassets */; };
@@ -70,8 +74,11 @@
 /* Begin PBXFileReference section */
 		01347A85A0F4A2EAF60C2858 /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
 		044F40BF3C4F64F797447E11 /* SpeakCheckApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakCheckApp.swift; sourceTree = "<group>"; };
+		0580095B912E173DA3FE015E /* ProfileSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSync.swift; sourceTree = "<group>"; };
+		05DA70A5D04D41C71957F923 /* PracticeGoal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeGoal.swift; sourceTree = "<group>"; };
 		0F7734F5642A8BEA72CB9294 /* AdaptiveStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveStack.swift; sourceTree = "<group>"; };
 		14DFF44F90136037896AEF28 /* ImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportView.swift; sourceTree = "<group>"; };
+		1A2B749E57FA22E944E75138 /* TasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksView.swift; sourceTree = "<group>"; };
 		1A4BD8235D77F911A6608175 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
 		1C13985E41752FB44E9AAF5A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1D779201319B34D2824E235F /* RemoteAssessmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteAssessmentService.swift; sourceTree = "<group>"; };
@@ -114,6 +121,7 @@
 		C1D5C1ECBEC519A3BEC78C1D /* AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
 		C21E60806D6756A4B76B5F3C /* TokenStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStore.swift; sourceTree = "<group>"; };
 		CB1CB60120B7E3827BCAE0E0 /* WordDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordDetailView.swift; sourceTree = "<group>"; };
+		D1B814D2464E228392CA9B35 /* DailyPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyPlan.swift; sourceTree = "<group>"; };
 		E44439719636B9E1937637AD /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		F3B7F4E95BF5A0FDE986049A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		F543CB6C7EB7076AE4DF01A0 /* SpeakCheck.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SpeakCheck.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -160,6 +168,7 @@
 				04DA92D753499FB71C737A59 /* Result */,
 				DCD18FB515921A959F0C9AA4 /* Settings */,
 				C788C3C39E3E46E62A0CC1B5 /* Share */,
+				46E77675488073FAFDEA4F3F /* Tasks */,
 				1EDA93BFCF7A80B4969BE27C /* WordDetail */,
 			);
 			path = Features;
@@ -208,6 +217,14 @@
 				F883E7AEE76A1C7D361E7BBF /* Text */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		46E77675488073FAFDEA4F3F /* Tasks */ = {
+			isa = PBXGroup;
+			children = (
+				1A2B749E57FA22E944E75138 /* TasksView.swift */,
+			);
+			path = Tasks;
 			sourceTree = "<group>";
 		};
 		574145B94AC331633F08D1D7 /* Audio */ = {
@@ -271,6 +288,7 @@
 		94268F2719E8FD98B930FE84 /* Engagement */ = {
 			isa = PBXGroup;
 			children = (
+				D1B814D2464E228392CA9B35 /* DailyPlan.swift */,
 				244052E89D55CC7C01781799 /* Engagement.swift */,
 			);
 			path = Engagement;
@@ -334,6 +352,7 @@
 			isa = PBXGroup;
 			children = (
 				9495BFE2B455DA28B484C0D4 /* AssessmentService.swift */,
+				0580095B912E173DA3FE015E /* ProfileSync.swift */,
 				1D779201319B34D2824E235F /* RemoteAssessmentService.swift */,
 			);
 			path = Services;
@@ -400,6 +419,7 @@
 			isa = PBXGroup;
 			children = (
 				56822C65D8ADE898143D6253 /* Domain.swift */,
+				05DA70A5D04D41C71957F923 /* PracticeGoal.swift */,
 				30D4C7F117AE3E8F8A2B6631 /* StarterTexts.swift */,
 			);
 			path = Models;
@@ -531,6 +551,7 @@
 				059AA20D47B0793F2757571F /* Buttons.swift in Sources */,
 				76E1FAC7BC9BE00FDF664FAD /* Cards.swift in Sources */,
 				EC0FCF275F2CD120E69C262F /* DOCXReader.swift in Sources */,
+				6D81072B0058CD6A491B7819 /* DailyPlan.swift in Sources */,
 				48CE25CC84D98ECCBFEBAFB2 /* DeepLink.swift in Sources */,
 				F5B201598A859767FBF34C8C /* DocumentExtractor.swift in Sources */,
 				F672CBC4D83F96C73BA576AD /* DocumentView.swift in Sources */,
@@ -544,7 +565,9 @@
 				DF155FF932F9A8B16B727878 /* ImportViewModel.swift in Sources */,
 				FC4AA4C5ED02ACD17BA89C73 /* MockData.swift in Sources */,
 				06512E8301A668227901BD42 /* OnboardingView.swift in Sources */,
+				39E76ADAB6FDEA64E83E85B5 /* PracticeGoal.swift in Sources */,
 				D86800DD3BDB78413D2D659D /* ProcessingView.swift in Sources */,
+				6ECA3C7F98C7358BCF4A38E5 /* ProfileSync.swift in Sources */,
 				04B75F447A9BAE1623D2E173 /* ReaderView.swift in Sources */,
 				0F756297C664845495032A89 /* RemoteAssessmentService.swift in Sources */,
 				3C1CDFB3390B1C4793CEE29F /* ResultView.swift in Sources */,
@@ -558,6 +581,7 @@
 				B6FCCCF9EAFF97B0B752C0A3 /* SpeakCheckApp.swift in Sources */,
 				AE310F59DB4D11DD34BC0AF5 /* SpeechPlayer.swift in Sources */,
 				261D6F60706C659A576B3E93 /* StarterTexts.swift in Sources */,
+				0821F277BAA36081E866276E /* TasksView.swift in Sources */,
 				4C904DC84FEB110C1FEFFB5E /* TextReviewView.swift in Sources */,
 				27E61F3D7D6255A74D765210 /* TextSegmenter.swift in Sources */,
 				539AABB93AAB4009AB70DC29 /* Theme.swift in Sources */,

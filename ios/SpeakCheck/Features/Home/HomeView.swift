@@ -3,43 +3,39 @@ import SwiftUI
 struct HomeView: View {
     @Environment(AppStore.self) private var store
     @Environment(Router.self) private var router
+    @State private var editingGoal: PracticeGoal?
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.Spacing.xl) {
                 header
 
-                if !store.attempts.isEmpty {
-                    StreakBadge(streak: Engagement.streak(attempts: store.attempts),
-                                practicedToday: Engagement.practicedToday(attempts: store.attempts))
+                // Первая оценка — за минуту: готовые тексты выше цели и загрузки (условие совета).
+                if store.attempts.isEmpty {
+                    starterSection
                 }
+
+                GoalCard(goal: store.goal, attempts: store.attempts,
+                         onEdit: { kind in
+                             editingGoal = store.goal.map { var g = $0; g.kind = kind ?? $0.kind; return g }
+                                 ?? PracticeGoal(kind: kind ?? .ielts, date: nil)
+                         },
+                         onPractice: { router.tab = .tasks })
 
                 if let doc = store.continueDocument {
                     continueCard(doc)
                 }
 
+                if !store.attempts.isEmpty {
+                    starterSection
+                }
+
                 Button {
                     router.push(.importDocument)
                 } label: {
-                    Label("Загрузить документ", systemImage: "arrow.up.doc.fill")
+                    Label("Свой текст: PDF, Word, фото", systemImage: "arrow.up.doc.fill")
                 }
-                .buttonStyle(.primary)
-
-                starterSection
-
-                WordOfDayCard(word: Engagement.wordOfTheDay()) {
-                    practice(Engagement.wordOfTheDay().example, title: "Слово дня: \(Engagement.wordOfTheDay().word)")
-                }
-
-                let difficult = Engagement.difficultWords(attempts: store.attempts)
-                if !difficult.isEmpty {
-                    VStack(alignment: .leading, spacing: Theme.Spacing.m) {
-                        SectionHeader(title: "Мои трудные слова")
-                        DifficultWordsCard(words: difficult) { word in
-                            practice(word, title: "Тренировка: \(word)")
-                        }
-                    }
-                }
+                .buttonStyle(.secondary)
 
                 recentSection
             }
@@ -48,30 +44,32 @@ struct HomeView: View {
         }
         .screenBackground()
         .toolbar(.hidden, for: .navigationBar)
+        .sheet(item: $editingGoal) { goal in
+            GoalSetupSheet(goal: goal) { store.goal = $0 }
+        }
     }
 
-    /// Мини-тренировка: документ из одного слова/фразы, сразу на экран чтения.
-    private func practice(_ text: String, title: String) {
-        let doc = SCDocument(
-            id: UUID(), title: title, source: .manual, status: .ready,
-            segments: [ReadingSegment(id: UUID(), sequence: 0, referenceText: text, pageNumber: nil)],
-            createdAt: .now, bestScore: nil, completedSegments: 0
-        )
-        store.add(doc)
-        router.push(.reader(documentID: doc.id, segmentIndex: 0))
-    }
+
 
     private var header: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             BrandMark()
                 .padding(.top, Theme.Spacing.s)
-            Text("Ваш тренер по английскому произношению")
+            Text(headline)
                 .font(.title.weight(.bold))
                 .foregroundStyle(Theme.Colors.textPrimary)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("Читайте свой текст вслух и получайте оценку по каждому слову.")
+            Text("Читайте свой ответ вслух — увидите, какие звуки вас выдают, и почему.")
                 .font(.subheadline)
                 .foregroundStyle(Theme.Colors.textSecondary)
+        }
+    }
+
+    private var headline: String {
+        switch store.goal?.kind {
+        case .interview: "Подготовка к собеседованию на английском"
+        case .general: "Говорите по-английски увереннее"
+        default: "Подготовка к IELTS Speaking и собеседованиям"
         }
     }
 
@@ -103,27 +101,27 @@ struct HomeView: View {
 
     private var starterSection: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
-            SectionHeader(title: "Попробуйте сразу")
+            SectionHeader(title: store.attempts.isEmpty ? "Начните с готового ответа" : "Готовые ответы")
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: Theme.Spacing.m) {
-                    ForEach(StarterTexts.all) { starter in
+                    ForEach(StarterTexts.ordered(for: store.goal?.kind)) { starter in
                         Button {
-                            let doc = store.add(StarterTexts.document(from: starter))
+                            let doc = store.starterDocument(starter)
                             router.push(.document(doc.id))
                         } label: {
                             VStack(alignment: .leading, spacing: Theme.Spacing.s) {
-                                IconTile(systemName: starter.icon, tint: starter.id.contains("challenge") ? Theme.Colors.warning : Theme.Colors.accentLight)
+                                IconTile(systemName: starter.icon, tint: starter.goal == nil ? Theme.Colors.warning : Theme.Colors.accentLight)
                                 Spacer(minLength: 0)
                                 Text(starter.title)
                                     .font(.subheadline.weight(.semibold))
                                     .foregroundStyle(Theme.Colors.textPrimary)
                                     .multilineTextAlignment(.leading)
-                                    .lineLimit(2)
+                                    .lineLimit(3)
                                 Text(starter.subtitle)
                                     .font(.caption)
                                     .foregroundStyle(Theme.Colors.textSecondary)
                             }
-                            .frame(width: 150, height: 136, alignment: .leading)
+                            .frame(width: 160, height: 150, alignment: .leading)
                             .card(padding: Theme.Spacing.m, radius: Theme.Radius.medium)
                         }
                         .buttonStyle(.plain)

@@ -55,7 +55,7 @@ struct ShareCardView: View {
                 .padding(.horizontal, 26)
 
                 if streak > 1 {
-                    Label("\(streak) \(StreakBadge.days(streak)) подряд", systemImage: "flame.fill")
+                    Label("\(streak) \(RussianPlural.days(streak)) подряд", systemImage: "flame.fill")
                         .font(.system(size: 17, weight: .bold))
                         .foregroundStyle(Theme.Colors.warning)
                 }

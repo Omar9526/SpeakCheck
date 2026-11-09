@@ -19,6 +19,12 @@ struct HistoryView: View {
                     chartCard
                 }
 
+                let difficult = Engagement.difficultWords(attempts: store.attempts)
+                if !difficult.isEmpty {
+                    SectionHeader(title: "Мои трудные слова")
+                    DifficultWordsCard(words: difficult, onPractice: practice)
+                }
+
                 if !store.documents.isEmpty {
                     SectionHeader(title: "Документы и попытки")
                     ForEach(store.documents) { doc in
@@ -30,6 +36,17 @@ struct HistoryView: View {
         }
         .screenBackground()
         .navigationTitle("Мой прогресс")
+    }
+
+    /// Мини-тренировка трудного слова: документ из одного слова, сразу на экран чтения.
+    private func practice(_ word: String) {
+        let doc = SCDocument(
+            id: UUID(), title: "Тренировка: \(word)", source: .manual, status: .ready,
+            segments: [ReadingSegment(id: UUID(), sequence: 0, referenceText: word, pageNumber: nil)],
+            createdAt: .now, bestScore: nil, completedSegments: 0
+        )
+        store.add(doc)
+        router.push(.reader(documentID: doc.id, segmentIndex: 0))
     }
 
     private var summaryCard: some View {

@@ -35,11 +35,19 @@ class DocumentListSerializer(serializers.ModelSerializer):
 class DocumentSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(required=False)
     segments = SegmentSerializer(many=True)
+    # Код вызова, из которого создан документ (необязательно). Неизвестный код молча игнорируется.
+    challenge_code = serializers.CharField(max_length=12, required=False, write_only=True, allow_blank=True)
 
     class Meta:
         model = Document
-        fields = ["id", "filename", "mime_type", "source", "status", "segments", "created_at", "updated_at"]
+        fields = ["id", "filename", "mime_type", "source", "status", "segments", "challenge_code",
+                  "created_at", "updated_at"]
         read_only_fields = ["status", "created_at", "updated_at"]
+
+    def validate_challenge_code(self, value):
+        from .models import Challenge
+
+        return Challenge.objects.filter(code=value).first() if value else None
 
     def validate_id(self, value):
         if Document.objects.filter(id=value).exists():
@@ -56,6 +64,7 @@ class DocumentSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated):
         segments = validated.pop("segments")
+        validated["challenge"] = validated.pop("challenge_code", None)
         doc = Document.objects.create(user=self.context["request"].user, **validated)
         _write_segments(doc, segments, existing={})
         return doc
@@ -64,6 +73,7 @@ class DocumentSerializer(serializers.ModelSerializer):
     def update(self, doc, validated):
         segments = validated.pop("segments", None)
         validated.pop("id", None)
+        validated.pop("challenge_code", None)
         for field, value in validated.items():
             setattr(doc, field, value)
         doc.save()

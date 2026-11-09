@@ -12,7 +12,7 @@ enum Route: Hashable {
 }
 
 enum AppTab: Hashable {
-    case home, progress, profile
+    case home, tasks, progress, profile
 }
 
 @MainActor
@@ -21,10 +21,12 @@ final class Router {
     var tab: AppTab = .home
     var homePath = NavigationPath()
     var progressPath = NavigationPath()
+    var tasksPath = NavigationPath()
 
     func push(_ route: Route) {
         switch tab {
         case .home, .profile: homePath.append(route)
+        case .tasks: tasksPath.append(route)
         case .progress: progressPath.append(route)
         }
     }
@@ -35,6 +37,9 @@ final class Router {
         case .home, .profile:
             if !homePath.isEmpty { homePath.removeLast() }
             homePath.append(route)
+        case .tasks:
+            if !tasksPath.isEmpty { tasksPath.removeLast() }
+            tasksPath.append(route)
         case .progress:
             if !progressPath.isEmpty { progressPath.removeLast() }
             progressPath.append(route)
@@ -44,6 +49,7 @@ final class Router {
     func popToRoot() {
         switch tab {
         case .home, .profile: homePath = NavigationPath()
+        case .tasks: tasksPath = NavigationPath()
         case .progress: progressPath = NavigationPath()
         }
     }

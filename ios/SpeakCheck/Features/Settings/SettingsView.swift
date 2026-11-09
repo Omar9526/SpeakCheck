@@ -56,6 +56,10 @@ struct SettingsView: View {
         .scrollContentBackground(.hidden)
         .screenBackground()
         .navigationTitle("Профиль")
+        // Настройки приватности должны доходить до сервера: он решает, хранить ли запись.
+        .onChange(of: keepAudio) { _, new in ProfileSync.push(.init(keepAudio: new)) }
+        .onChange(of: voiceConsent) { _, new in ProfileSync.push(.init(voiceConsent: new)) }
+        .onChange(of: explanationLanguage) { _, new in ProfileSync.push(.init(explanationLanguage: new)) }
         .confirmationDialog("Удалить все документы, попытки и записи?", isPresented: $confirmErase, titleVisibility: .visible) {
             Button("Удалить всё", role: .destructive) {
                 store.eraseAll()

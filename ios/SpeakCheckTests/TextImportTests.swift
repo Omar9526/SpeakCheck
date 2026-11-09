@@ -100,10 +100,62 @@ struct EngagementTests {
     }
 
     @Test func russianPlural() {
-        #expect(StreakBadge.days(1) == "день")
-        #expect(StreakBadge.days(3) == "дня")
-        #expect(StreakBadge.days(5) == "дней")
-        #expect(StreakBadge.days(11) == "дней")
-        #expect(StreakBadge.days(22) == "дня")
+        #expect(RussianPlural.days(1) == "день")
+        #expect(RussianPlural.days(3) == "дня")
+        #expect(RussianPlural.days(5) == "дней")
+        #expect(RussianPlural.days(11) == "дней")
+        #expect(RussianPlural.days(22) == "дня")
+        #expect(RussianPlural.fragments(3) == "фрагмента")
+    }
+
+    @Test func goalCountdownAndDailyPlan() {
+        let cal = Calendar.current
+        let now = Date.now
+        let goal = PracticeGoal(kind: .ielts, date: cal.date(byAdding: .day, value: 24, to: now), dailyTarget: 3)
+        #expect(goal.daysLeft(now: now) == 24)
+        #expect(PracticeGoal(kind: .ielts, date: now).daysLeft(now: now) == 0)
+        #expect(PracticeGoal(kind: .ielts, date: cal.date(byAdding: .day, value: -2, to: now)).daysLeft(now: now) == nil)
+        #expect(PracticeGoal(kind: .general, date: nil).daysLeft(now: now) == nil)
+        let attempts = [attempt(daysAgo: 0), attempt(daysAgo: 0), attempt(daysAgo: 1)]
+        #expect(PracticeGoal.doneToday(attempts: attempts, now: now) == 2)
+    }
+
+    @Test func dailyPlanTicksAutomatically() {
+        let starter = StarterTexts.ordered(for: .interview).first!
+        var doc = StarterTexts.document(from: starter)
+        func done(_ docID: UUID, _ words: [WordAssessment] = []) -> ReadingAttempt {
+            var a = attempt(daysAgo: 0, words: words)
+            a = ReadingAttempt(id: a.id, segmentID: a.segmentID, documentID: docID, durationMs: 1, status: .completed,
+                               createdAt: .now, assessment: a.assessment, failureReason: nil)
+            return a
+        }
+        let goal = PracticeGoal(kind: .interview, date: nil, dailyTarget: 2)
+        var tasks = DailyPlan.tasks(goal: goal, documents: [doc], attempts: [])
+        #expect(tasks.map(\.kind) == [.readFragments, .newAnswer])  // трудных слов ещё нет
+        #expect(tasks.last?.starterID == starter.id)
+        #expect(tasks.allSatisfy { !$0.isComplete })
+
+        let weak = WordAssessment(index: 0, word: "thought", startMs: nil, endMs: nil, score: 40, errorType: .mispronunciation, phonemes: nil)
+        let attempts = [done(doc.id, [weak]), done(doc.id)]
+        tasks = DailyPlan.tasks(goal: goal, documents: [doc], attempts: attempts)
+        #expect(tasks.first { $0.kind == .readFragments }?.isComplete == true)
+        #expect(tasks.first { $0.kind == .newAnswer }?.isComplete == true)
+        #expect(tasks.first { $0.kind == .difficultWords }?.isComplete == false)
+
+        // дочитанный ответ больше не предлагается
+        doc.completedSegments = doc.segments.count
+        #expect(DailyPlan.nextStarter(goal: .interview, documents: [doc])?.id != starter.id)
+    }
+
+    @Test func startersFitOneSegmentAndFollowGoal() {
+        // каждый абзац — один фрагмент ≤ 40 слов (иначе Azure не оценит пропуски)
+        for starter in StarterTexts.all {
+            for p in starter.paragraphs {
+                #expect(TextSegmenter.wordCount(p) <= TextSegmenter.maxWordsPerSegment, "\(starter.id)")
+            }
+        }
+        #expect(StarterTexts.ordered(for: .interview).first?.goal == .interview)
+        #expect(StarterTexts.ordered(for: .ielts).first?.goal == .ielts)
+        #expect(StarterTexts.ordered(for: nil).count == StarterTexts.all.count)
     }
 }

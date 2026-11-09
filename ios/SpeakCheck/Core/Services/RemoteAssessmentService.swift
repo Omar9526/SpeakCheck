@@ -114,9 +114,12 @@ private struct DocumentPayload: Encodable, Sendable {
     let filename: String
     let source: String
     let segments: [Segment]
+    /// Документ из «Вызова другу» — сервер считает, сколько вызовов приняли.
+    let challengeCode: String?
 
     init(document: SCDocument) {
         id = document.id
+        challengeCode = document.challenge?.code
         filename = String(document.title.prefix(255))
         source = document.source.rawValue
         segments = document.segments.map { Segment(id: $0.id, referenceText: $0.referenceText, pageNumber: $0.pageNumber) }

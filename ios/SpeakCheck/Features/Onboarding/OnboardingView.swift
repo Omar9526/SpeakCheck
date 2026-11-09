@@ -7,10 +7,10 @@ struct OnboardingView: View {
     @State private var appleNonce = ""
 
     private let benefits: [(icon: String, title: String, text: String)] = [
-        ("doc.text.fill", "Свой текст", "PDF, Word, TXT или фото страницы"),
-        ("waveform", "Читаете вслух", "Запись прямо в приложении"),
-        ("chart.pie.fill", "Оценка 0–100", "Произношение, беглость, точность"),
-        ("text.bubble.fill", "Разбор ошибок", "Объяснения на русском и повтор слова")
+        ("graduationcap.fill", "IELTS Speaking и собеседования", "Готовые ответы или свой текст из PDF, Word, фото"),
+        ("waveform", "Читаете вслух", "Оценка 0–100 по каждому слову и звуку"),
+        ("text.bubble.fill", "Разбор на русском", "Почему звук не так и как сказать правильно"),
+        ("calendar", "План до даты", "Обратный отсчёт до экзамена и задание на день")
     ]
 
     var body: some View {
@@ -20,10 +20,10 @@ struct OnboardingView: View {
                     .padding(.top, Theme.Spacing.xl)
 
                 VStack(alignment: .leading, spacing: Theme.Spacing.m) {
-                    Text("Говорите по-английски увереннее")
+                    Text("Подготовьтесь к IELTS Speaking и собеседованию")
                         .font(.largeTitle.weight(.bold))
                         .foregroundStyle(Theme.Colors.textPrimary)
-                    Text("Загрузите любой английский текст, прочитайте его вслух и узнайте, какие слова звучат неправильно.")
+                    Text("Прочитайте свой ответ вслух и узнайте, какие звуки вас выдают — с объяснением на русском.")
                         .font(.body)
                         .foregroundStyle(Theme.Colors.textSecondary)
                 }

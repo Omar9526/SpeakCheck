@@ -26,6 +26,9 @@ class Document(models.Model):
     source = models.CharField(max_length=16, choices=Source.choices, default=Source.MANUAL)
     storage_key = models.CharField(max_length=255, blank=True)
     status = models.CharField(max_length=16, choices=Status.choices, default=Status.READY)
+    # Документ создан из «Вызова другу» — для метрики «сколько вызовов приняли».
+    challenge = models.ForeignKey("Challenge", on_delete=models.SET_NULL, null=True, blank=True,
+                                  related_name="documents")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
