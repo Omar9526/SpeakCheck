@@ -1,0 +1,23 @@
+# Секреты — никогда не коммитить
+.env
+.env.*
+!.env.example
+*.p8
+*.pem
+
+# macOS / Xcode
+.DS_Store
+ios/build/
+ios/*.xcodeproj/xcuserdata/
+ios/*.xcodeproj/project.xcworkspace/xcuserdata/
+DerivedData/
+*.xcuserstate
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+backend/media/
+backend/staticfiles/
+.pytest_cache/
+.coverage
