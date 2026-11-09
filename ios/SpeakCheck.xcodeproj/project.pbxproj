@@ -21,6 +21,7 @@
 		2844D68378F19884C13C4132 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726C25A999811B4A1710583C /* ShareSheet.swift */; };
 		293092EC3F8D7FFF5955CB73 /* ImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DFF44F90136037896AEF28 /* ImportView.swift */; };
 		3C1CDFB3390B1C4793CEE29F /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01347A85A0F4A2EAF60C2858 /* ResultView.swift */; };
+		400064E33883C2555AEECB56 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F3B7F4E95BF5A0FDE986049A /* PrivacyInfo.xcprivacy */; };
 		43506317100ACD148F09C59A /* EngagementViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605715E9CAFB7C1BC4AF8CFE /* EngagementViews.swift */; };
 		48CE25CC84D98ECCBFEBAFB2 /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DE5C2C8F30F5B2AB110CCF /* DeepLink.swift */; };
 		4C904DC84FEB110C1FEFFB5E /* TextReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92AA1763F1C86D144261114C /* TextReviewView.swift */; };
@@ -99,6 +100,7 @@
 		8BA8908C3C38D40AA5AEEBD6 /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
 		92AA1763F1C86D144261114C /* TextReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextReviewView.swift; sourceTree = "<group>"; };
 		9495BFE2B455DA28B484C0D4 /* AssessmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssessmentService.swift; sourceTree = "<group>"; };
+		9AA242C3CB37AE01C851DD7E /* SpeakCheck.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SpeakCheck.entitlements; sourceTree = "<group>"; };
 		A54B62C636732F773B16B108 /* AssessmentAggregator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssessmentAggregator.swift; sourceTree = "<group>"; };
 		A6A97923D625C3FC509B372D /* SpeakCheckTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SpeakCheckTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7E3BD9A916A43E3A3B2D441 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 		C21E60806D6756A4B76B5F3C /* TokenStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStore.swift; sourceTree = "<group>"; };
 		CB1CB60120B7E3827BCAE0E0 /* WordDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordDetailView.swift; sourceTree = "<group>"; };
 		E44439719636B9E1937637AD /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		F3B7F4E95BF5A0FDE986049A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		F543CB6C7EB7076AE4DF01A0 /* SpeakCheck.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SpeakCheck.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F641FDA5D15B510BBE1CC2F7 /* ScoringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoringTests.swift; sourceTree = "<group>"; };
 		F6F5CF026341EFF91C4EA135 /* SpeechPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechPlayer.swift; sourceTree = "<group>"; };
@@ -356,6 +359,8 @@
 			children = (
 				5451AC89AA920ADA84CE8B24 /* Assets.xcassets */,
 				65CF6332CC660BF52BA8A180 /* Info.plist */,
+				F3B7F4E95BF5A0FDE986049A /* PrivacyInfo.xcprivacy */,
+				9AA242C3CB37AE01C851DD7E /* SpeakCheck.entitlements */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -493,6 +498,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A207710A386E44CCCC94441 /* Assets.xcassets in Resources */,
+				400064E33883C2555AEECB56 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -615,7 +621,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -679,7 +685,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -696,12 +702,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SpeakCheck/Resources/SpeakCheck.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SpeakCheck/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = SpeakCheck;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Камера нужна, чтобы сфотографировать текст для чтения.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "SpeakCheck записывает ваше чтение вслух, чтобы оценить произношение.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Доступ к фото нужен, чтобы распознать текст с изображения.";
@@ -725,12 +734,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SpeakCheck/Resources/SpeakCheck.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SpeakCheck/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = SpeakCheck;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Камера нужна, чтобы сфотографировать текст для чтения.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "SpeakCheck записывает ваше чтение вслух, чтобы оценить произношение.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Доступ к фото нужен, чтобы распознать текст с изображения.";

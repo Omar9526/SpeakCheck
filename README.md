@@ -47,4 +47,4 @@ xcodebuild -project SpeakCheck.xcodeproj -scheme SpeakCheck -configuration Debug
 | 4 | Azure Pronunciation Assessment | ✅ код + тесты; нужен ключ Azure для живой проверки |
 | 5 | DeepSeek-объяснения | ✅ код + тесты; нужен ключ DeepSeek |
 | 6 | Вирусность: карточка для сторис, вызов другу (ссылка + лендинг), серия дней, слово дня, трудные слова | ✅ |
-| 7 | Тесты, доступность, TestFlight | ⏳ |
+| 7 | Деплой (deploy/), доступность, манифест приватности, материалы App Store (docs/appstore.md) ✅ · TestFlight — нужен Apple Developer Team ID | 🟡 |

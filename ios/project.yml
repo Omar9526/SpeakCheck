@@ -8,7 +8,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "6.0"
-    MARKETING_VERSION: "0.1.0"
+    MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: "1"
 targets:
   SpeakCheck:
@@ -16,6 +16,10 @@ targets:
     platform: iOS
     sources:
       - SpeakCheck
+    entitlements:
+      path: SpeakCheck/Resources/SpeakCheck.entitlements
+      properties:
+        com.apple.developer.applesignin: [Default]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: kg.speakcheck.app
@@ -27,6 +31,8 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_UIUserInterfaceStyle: Dark
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.education
         INFOPLIST_KEY_NSMicrophoneUsageDescription: "SpeakCheck записывает ваше чтение вслух, чтобы оценить произношение."
         INFOPLIST_KEY_NSCameraUsageDescription: "Камера нужна, чтобы сфотографировать текст для чтения."
         INFOPLIST_KEY_NSPhotoLibraryUsageDescription: "Доступ к фото нужен, чтобы распознать текст с изображения."
