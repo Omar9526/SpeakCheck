@@ -9,6 +9,7 @@ iOS-приложение для тренировки английского пр
 ```
 ios/        SwiftUI-приложение (Swift 6, iOS 17+, XcodeGen)
 backend/    Django + DRF + PostgreSQL + Celery (Azure Speech, DeepSeek)
+deploy/     Docker Compose для сервера (Caddy HTTPS, Postgres, Redis) — см. deploy/README.md
 docs/       ТЗ, скриншоты, архитектура
 ```
 

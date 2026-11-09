@@ -9,6 +9,7 @@ dependencies = [
     "django-environ>=0.14.0",
     "djangorestframework>=3.18.3",
     "djangorestframework-simplejwt>=5.5.1",
+    "gunicorn>=26.2.0",
     "psycopg[binary]>=3.3.8",
     "pyjwt[crypto]>=2.15.1",
     "redis>=8.1.0",

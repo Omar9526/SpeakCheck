@@ -3,6 +3,7 @@ from datetime import timedelta
 from pathlib import Path
 
 import environ
+from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -14,11 +15,15 @@ environ.Env.read_env(BASE_DIR / ".env", overwrite=False)
 
 SECRET_KEY = env("DJANGO_SECRET_KEY", default="dev-insecure-key-only-for-local-development-change-me")
 DEBUG = env("DJANGO_DEBUG")
+# В продакшне (DJANGO_ENV=production) запуск с ключом по умолчанию запрещён.
+if env("DJANGO_ENV", default="development") == "production" and SECRET_KEY.startswith("dev-insecure"):
+    raise ImproperlyConfigured("DJANGO_SECRET_KEY обязателен в продакшне")
 ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS")
 
 INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
+    "django.contrib.staticfiles",
     "rest_framework",
     "apps.accounts",
     "apps.reading",
@@ -28,6 +33,7 @@ MIDDLEWARE = [
     "core.middleware.RequestIDMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -72,6 +78,9 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
+STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 # Celery: без REDIS_URL задачи выполняются синхронно (dev/тесты).
 REDIS_URL = env("REDIS_URL", default="")
 CELERY_BROKER_URL = REDIS_URL or "memory://"
@@ -86,6 +95,8 @@ APP_STORE_URL = env("APP_STORE_URL", default="https://apps.apple.com/")
 
 # Apple
 APPLE_BUNDLE_ID = env("APPLE_BUNDLE_ID", default="kg.speakcheck.app")
+APPLE_TEAM_ID = env("APPLE_TEAM_ID", default="")
+SUPPORT_EMAIL = env("SUPPORT_EMAIL", default="")
 
 # Azure Speech
 AZURE_SPEECH_KEY = env("AZURE_SPEECH_KEY", default="")
@@ -113,6 +124,8 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # В продакшне включить (обычно TLS терминирует прокси, тогда достаточно HSTS).
 SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=False)
 SECURE_HSTS_SECONDS = env.int("SECURE_HSTS_SECONDS", default=0)
+# API на JWT без cookie-сессий — CSRF не нужен; HTTP→HTTPS перенаправляет Caddy (deploy/Caddyfile).
+SILENCED_SYSTEM_CHECKS = ["security.W003", "security.W008"]
 
 # Логи без содержимого документов, аудио и ключей (ТЗ, раздел 11).
 LOGGING = {

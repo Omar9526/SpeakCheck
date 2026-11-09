@@ -1,0 +1,9 @@
+# HTTPS-сертификат Let's Encrypt выпускается автоматически для {$DOMAIN}.
+{$DOMAIN} {
+	encode gzip
+	request_body {
+		max_size 30MB
+	}
+	header Strict-Transport-Security "max-age=31536000"
+	reverse_proxy web:8000
+}
