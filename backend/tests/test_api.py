@@ -294,3 +294,14 @@ def test_history_summary_weighted_and_streak(api, document, wav):
 def test_request_id_header(api):
     r = api.get("/api/v1/me", HTTP_X_REQUEST_ID="client-req-0001")
     assert r["X-Request-ID"] == "client-req-0001"
+
+
+def test_retryable_failure_can_be_resent_with_same_key(api, document, wav):
+    seg = document["segments"][0]["id"]
+    first = upload(api, seg, wav(), key="retry-key-0001")
+    assert api.get(f"/api/v1/attempts/{first.data['id']}").data["failure_code"] == "service_not_configured"
+    with mock.patch("services.azure_speech.assess", side_effect=fake_assess):
+        second = upload(api, seg, wav(), key="retry-key-0001")
+    assert second.status_code == 202 and second.data["id"] != first.data["id"]
+    assert api.get(f"/api/v1/attempts/{second.data['id']}").data["status"] == "completed"
+    assert ReadingAttempt.objects.count() == 1

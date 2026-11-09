@@ -3,6 +3,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     @Environment(AppStore.self) private var store
+    @State var appleError = false
 
     private let benefits: [(icon: String, title: String, text: String)] = [
         ("doc.text.fill", "Свой текст", "PDF, Word, TXT или фото страницы"),
@@ -44,9 +45,8 @@ struct OnboardingView: View {
                 VStack(spacing: Theme.Spacing.m) {
                     SignInWithAppleButton(.signIn) { request in
                         request.requestedScopes = []
-                    } onCompletion: { _ in
-                        // Этап 3: identity token отправляется на POST /api/v1/auth/apple.
-                        store.hasCompletedOnboarding = true
+                    } onCompletion: { result in
+                        handleApple(result)
                     }
                     .signInWithAppleButtonStyle(.white)
                     .frame(height: 54)
@@ -54,6 +54,7 @@ struct OnboardingView: View {
 
                     Button("Попробовать без входа") {
                         store.hasCompletedOnboarding = true
+                        // Гостевой аккаунт на сервере создаётся лениво при первой оценке.
                     }
                     .buttonStyle(.secondary)
 
@@ -68,7 +69,34 @@ struct OnboardingView: View {
             .padding(.bottom, Theme.Spacing.xl)
         }
         .scrollBounceBehavior(.basedOnSize)
+        .alert("Не удалось войти через Apple", isPresented: $appleError) {
+            Button("Продолжить без входа") { store.hasCompletedOnboarding = true }
+            Button("Отмена", role: .cancel) {}
+        } message: {
+            Text("Проверьте подключение к интернету или продолжите без входа — данные сохранятся на iPhone.")
+        }
         .background(ScreenBackground())
+    }
+}
+
+extension OnboardingView {
+    func handleApple(_ result: Result<ASAuthorization, Error>) {
+        guard case .success(let auth) = result,
+              let credential = auth.credential as? ASAuthorizationAppleIDCredential,
+              let tokenData = credential.identityToken,
+              let token = String(data: tokenData, encoding: .utf8) else {
+            appleError = true
+            return
+        }
+        Task {
+            do {
+                try await APIClient.shared.signInWithApple(identityToken: token)
+                UserDefaults.standard.set(true, forKey: "sc.appleSignedIn")
+                store.hasCompletedOnboarding = true
+            } catch {
+                appleError = true
+            }
+        }
     }
 }
 

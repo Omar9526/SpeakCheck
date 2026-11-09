@@ -13,10 +13,10 @@ struct SettingsView: View {
                 HStack(spacing: Theme.Spacing.m) {
                     IconTile(systemName: "person.fill", size: 48)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Гостевой режим")
+                        Text(UserDefaults.standard.bool(forKey: "sc.appleSignedIn") ? "Вход через Apple" : "Гостевой режим")
                             .font(.headline)
                             .foregroundStyle(Theme.Colors.textPrimary)
-                        Text("Данные хранятся только на этом iPhone")
+                        Text(UserDefaults.standard.bool(forKey: "sc.appleSignedIn") ? "История сохраняется в аккаунте" : "Данные хранятся только на этом iPhone")
                             .font(.caption)
                             .foregroundStyle(Theme.Colors.textSecondary)
                     }
@@ -43,7 +43,11 @@ struct SettingsView: View {
 
             Section {
                 Button("Удалить все мои данные", role: .destructive) { confirmErase = true }
-                Button("Выйти") { store.hasCompletedOnboarding = false }
+                Button("Выйти") {
+                    TokenStore.clear()
+                    UserDefaults.standard.set(false, forKey: "sc.appleSignedIn")
+                    store.hasCompletedOnboarding = false
+                }
                     .foregroundStyle(Theme.Colors.textPrimary)
             } footer: {
                 Text("SpeakCheck \(Bundle.main.appVersion) · Оценки — учебный ориентир, а не сертифицированный тест CEFR.")
@@ -56,6 +60,11 @@ struct SettingsView: View {
             Button("Удалить всё", role: .destructive) {
                 store.eraseAll()
                 try? FileManager.default.removeItem(at: AudioRecorder.draftsDirectory)
+                // Удаление аккаунта и всех данных на сервере (DELETE /me).
+                Task {
+                    if TokenStore.accessToken != nil { try? await APIClient.shared.delete("me") }
+                    TokenStore.clear()
+                }
             }
         }
     }

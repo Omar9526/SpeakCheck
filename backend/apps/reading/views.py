@@ -55,6 +55,9 @@ class DocumentDetailView(generics.RetrieveUpdateDestroyAPIView):
         doc.delete()
 
 
+RETRYABLE_FAILURES = {"service_not_configured", "provider_unavailable", "provider_error"}
+
+
 class AttemptCreateView(APIView):
     """POST /segments/{id}/attempts — multipart: audio (WAV 16 кГц mono), заголовок Idempotency-Key."""
 
@@ -69,7 +72,11 @@ class AttemptCreateView(APIView):
         key = (request.headers.get("Idempotency-Key") or "")[:64] or None
         if key:
             existing = ReadingAttempt.objects.filter(user=request.user, idempotency_key=key).first()
-            if existing:
+            if existing and existing.status == ReadingAttempt.Status.FAILED and existing.failure_code in RETRYABLE_FAILURES:
+                # Временный сбой провайдера: та же запись может быть отправлена повторно.
+                storage.delete(existing.audio_key)
+                existing.delete()
+            elif existing:
                 return Response(AttemptSerializer(existing).data, status=status.HTTP_200_OK)
 
         since = timezone.now() - timedelta(days=1)

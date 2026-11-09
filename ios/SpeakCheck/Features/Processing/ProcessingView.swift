@@ -139,7 +139,7 @@ struct ProcessingView: View {
         task?.cancel()
         task = Task {
             do {
-                let assessment = try await service.assess(draft: draft, referenceText: segment.referenceText) { stage in
+                let assessment = try await service.assess(draft: draft, document: doc) { stage in
                     Task { @MainActor in self.stage = stage }
                 }
                 let attempt = ReadingAttempt(
@@ -167,7 +167,9 @@ struct ProcessingView: View {
 }
 
 private struct AssessmentServiceKey: EnvironmentKey {
-    static let defaultValue: any AssessmentService = UnconfiguredAssessmentService()
+    static let defaultValue: any AssessmentService = RemoteAssessmentService.isAvailable
+        ? RemoteAssessmentService(api: .shared)
+        : UnconfiguredAssessmentService()
 }
 
 extension EnvironmentValues {

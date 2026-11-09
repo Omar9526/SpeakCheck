@@ -4,8 +4,9 @@ import NaturalLanguage
 /// Делит текст на фрагменты для чтения: по абзацам, а длинные абзацы — по предложениям,
 /// чтобы каждая запись укладывалась в лимиты движка оценки (ТЗ, разделы 6–7).
 enum TextSegmenter {
-    /// Мягкий предел слов на фрагмент (~25–30 секунд чтения).
-    static let maxWordsPerSegment = 60
+    /// Мягкий предел слов на фрагмент: ~40 слов читаются быстрее 30 секунд, а до 30 с Azure
+    /// сам надёжно размечает пропуски и лишние слова (режим miscue).
+    static let maxWordsPerSegment = 40
 
     static func segments(from text: String, pageNumber: Int? = nil, startSequence: Int = 0) -> [ReadingSegment] {
         let chunks = paragraphs(in: text).flatMap(split(paragraph:))

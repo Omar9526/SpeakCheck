@@ -3,7 +3,7 @@ import Foundation
 /// Оценка чтения. Реализация ходит на backend, который вызывает Azure Speech;
 /// клиент никогда не вычисляет и не подставляет проценты сам (ТЗ, раздел 15).
 protocol AssessmentService: Sendable {
-    func assess(draft: RecordingDraft, referenceText: String,
+    func assess(draft: RecordingDraft, document: SCDocument,
                 onStatus: @escaping @Sendable (AssessmentStage) -> Void) async throws -> Assessment
     func explain(assessment: Assessment, referenceText: String) async throws -> AIExplanation
 }
@@ -47,7 +47,7 @@ enum AssessmentError: Error, Equatable {
 
 /// Используется, пока backend не настроен (нет BASE_URL). Честно сообщает об этом.
 struct UnconfiguredAssessmentService: AssessmentService {
-    func assess(draft: RecordingDraft, referenceText: String,
+    func assess(draft: RecordingDraft, document: SCDocument,
                 onStatus: @escaping @Sendable (AssessmentStage) -> Void) async throws -> Assessment {
         onStatus(.uploading)
         try await Task.sleep(for: .milliseconds(600))

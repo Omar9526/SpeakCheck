@@ -22,6 +22,7 @@ targets:
         PRODUCT_NAME: SpeakCheck
         TARGETED_DEVICE_FAMILY: "1"
         GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: SpeakCheck/Resources/Info.plist
         INFOPLIST_KEY_CFBundleDisplayName: SpeakCheck
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
@@ -33,6 +34,11 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         CODE_SIGN_STYLE: Automatic
         ENABLE_PREVIEWS: YES
+      configs:
+        Debug:
+          SC_API_BASE_URL: "http://localhost:8000"
+        Release:
+          SC_API_BASE_URL: ""
   SpeakCheckTests:
     type: bundle.unit-test
     platform: iOS
