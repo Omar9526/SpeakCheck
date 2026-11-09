@@ -1,0 +1,13 @@
+{
+  "id": "P013",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "I already pay my IELTS tutor every month, and I add apps only when she tells me to. I'd maybe use the 3 free fragments a day, but I wouldn't pay until I know the scores actually match what an examiner hears.",
+  "objection": "Can an app really score my pronunciation accurately? If it says 85 and the examiner hears something else, I've wasted my time, and pronunciation is only one part of my Speaking band anyway.",
+  "would_change_my_mind": "My tutor recommending it, or her checking a few of my recordings and agreeing with the app's scores.",
+  "price_too_cheap": 1,
+  "price_cheap": 2.5,
+  "price_expensive": 5,
+  "price_too_expensive": 9
+}

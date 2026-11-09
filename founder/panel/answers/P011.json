@@ -1,0 +1,13 @@
+{
+  "id": "P011",
+  "buys": true,
+  "purchases_first_month": 1,
+  "reason_code": "timing",
+  "reason": "My exam is in about three weeks, so I'd take the free 7 days, and if the Russian explanations actually show me which sounds I mess up, I'd pay for one month to get through the exam. Then I'd cancel.",
+  "objection": "It's only pronunciation, and that's only part of the Speaking score. Paying in dollars through the App Store feels expensive in soms for something that doesn't check my grammar or vocabulary.",
+  "would_change_my_mind": "",
+  "price_too_cheap": 1,
+  "price_cheap": 3,
+  "price_expensive": 7,
+  "price_too_expensive": 12
+}

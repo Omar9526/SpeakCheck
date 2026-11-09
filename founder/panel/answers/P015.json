@@ -1,0 +1,13 @@
+{
+  "id": "P015",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "I'd download it and use the 3 free fragments a day plus the 7-day trial, but I'd cancel before it charges. ChatGPT voice is free and YouTube has IELTS speaking tips, so paying $5 a month isn't happening on my budget.",
+  "objection": "It only checks pronunciation, not grammar or vocabulary, while ChatGPT voice mode corrects me on everything for free. Why pay for less?",
+  "would_change_my_mind": "A big student discount, like a one-time $5–7 payment for the whole period until my exam, and proof that it actually raised someone's Speaking band.",
+  "price_too_cheap": 0.5,
+  "price_cheap": 1.5,
+  "price_expensive": 3,
+  "price_too_expensive": 5
+}

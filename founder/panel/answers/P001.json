@@ -1,0 +1,13 @@
+{
+  "id": "P001",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "I already pay for an IELTS course, so I'd take the free 3 fragments a day and maybe the 7-day trial, then cancel before it charges. $4.99 a month on top of my course feels like one subscription too many.",
+  "objection": "It only checks pronunciation, not vocabulary or grammar, and my course already covers speaking, so I don't see why I should pay twice.",
+  "would_change_my_mind": "A big one-time discount on the yearly plan, like $15 for the year, or a launch promo I could grab before my exam.",
+  "price_too_cheap": 1,
+  "price_cheap": 2.5,
+  "price_expensive": 5,
+  "price_too_expensive": 8
+}

@@ -1,0 +1,13 @@
+{
+  "id": "P014",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "I already pay my tutor every month and she corrects my pronunciation in class, so another $5 on an app my teacher didn't suggest feels like wasted money. I'd maybe try the free 3 fragments a day, but I wouldn't pay for Pro.",
+  "objection": "My tutor already does this, and the app only checks pronunciation, not grammar or vocabulary, which is where I actually lose points.",
+  "would_change_my_mind": "If my tutor told me to use it for homework between lessons.",
+  "price_too_cheap": 0.99,
+  "price_cheap": 2,
+  "price_expensive": 4.99,
+  "price_too_expensive": 8
+}

@@ -1,0 +1,13 @@
+{
+  "id": "P018",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "I already pay my tutor about $100 a month and she corrects my pronunciation in class. My real problem is freezing when I speak without a script, and reading a prepared answer aloud doesn't fix that. I'd maybe try the free 3 a day, but I won't pay for it unless my teacher tells me to.",
+  "objection": "It only checks pronunciation while I read text. IELTS Speaking is about fluency, vocabulary and grammar when I talk spontaneously, and my tutor already covers pronunciation.",
+  "would_change_my_mind": "If my tutor or IELTS centre recommended it as homework between lessons, or if it let me answer questions freely without a script and gave feedback on fluency.",
+  "price_too_cheap": 1,
+  "price_cheap": 3,
+  "price_expensive": 8,
+  "price_too_expensive": 15
+}

@@ -1,0 +1,36 @@
+{
+  "business": "SpeakCheck — iPhone app: IELTS Speaking and job-interview pronunciation trainer for Russian speakers",
+  "target": "Russian-speaking iPhone owners in Bishkek, 17 to 35, with an IELTS Speaking test or an English job interview in the next 1–3 months",
+  "where": "Bishkek, Kyrgyzstan (App Store KG, prices shown in USD)",
+  "age": [17, 35],
+  "segments": [
+    {"name": "Student preparing IELTS to study abroad (family pays or part-time job)", "share": 0.45, "income": [1500, 8000]},
+    {"name": "Working professional needing IELTS for relocation or a master's", "share": 0.25, "income": [8000, 30000]},
+    {"name": "Job seeker preparing an English interview (IT, outsourcing, international org)", "share": 0.30, "income": [6000, 36000]}
+  ],
+  "behaviours": [
+    {"name": "Already pays a course or tutor", "share": 0.20, "how": "Pays an IELTS centre or tutor in Bishkek ($50–140 a month) and adds apps only if the teacher recommends them."},
+    {"name": "Free-only", "share": 0.20, "how": "Uses free tiers, YouTube and ChatGPT voice; cancels every trial before it charges."},
+    {"name": "Burned by another app", "share": 0.15, "how": "Tried ELSA or Praktika, hit crashes, mic problems or a surprise paywall, and is now suspicious of subscriptions."},
+    {"name": "Last-minute crammer", "share": 0.15, "how": "Exam or interview is in 2–3 weeks; will pay for anything that clearly helps right now, then stop."},
+    {"name": "Asks the Telegram chat first", "share": 0.10, "how": "Checks what people in IELTS Telegram groups recommend before installing anything."},
+    {"name": "Deal hunter", "share": 0.10, "how": "Waits for a discount or a yearly plan with a big saving before paying."},
+    {"name": "Self-learner", "share": 0.10, "how": "Studies alone every evening with a plan; likes tracking progress and streaks."}
+  ],
+  "objections": [
+    "Another subscription — I already pay for a course",
+    "Pronunciation is only one of four IELTS criteria; I need fluency, vocabulary and grammar too",
+    "Can an app really score my pronunciation accurately?",
+    "ChatGPT voice mode is free and can also correct me",
+    "Apps like this crash or don't hear the microphone",
+    "My tutor already corrects my pronunciation",
+    "Paying in USD through the App Store feels expensive in soms"
+  ],
+  "habits": [
+    "you study on your phone in the marshrutka on the way to university or work",
+    "you are in two or three IELTS Telegram chats",
+    "you watch English YouTube videos with Russian subtitles",
+    "you practise speaking answers alone in your room before the exam",
+    "your English reading is fine, but you freeze when you have to speak"
+  ]
+}

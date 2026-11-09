@@ -1,0 +1,222 @@
+[
+ {
+  "id": "P001",
+  "name": "Lina",
+  "age": 18,
+  "segment": "Working professional needing IELTS for relocation or a master's",
+  "income": 21000,
+  "behaviour": "Deal hunter",
+  "behaviour_how": "Waits for a discount or a yearly plan with a big saving before paying.",
+  "objection": "Another subscription — I already pay for a course",
+  "habit": "you watch English YouTube videos with Russian subtitles"
+ },
+ {
+  "id": "P002",
+  "name": "Yusuf",
+  "age": 25,
+  "segment": "Student preparing IELTS to study abroad (family pays or part-time job)",
+  "income": 6000,
+  "behaviour": "Asks the Telegram chat first",
+  "behaviour_how": "Checks what people in IELTS Telegram groups recommend before installing anything.",
+  "objection": "Apps like this crash or don't hear the microphone",
+  "habit": "you study on your phone in the marshrutka on the way to university or work"
+ },
+ {
+  "id": "P003",
+  "name": "Kenji",
+  "age": 32,
+  "segment": "Job seeker preparing an English interview (IT, outsourcing, international org)",
+  "income": 13000,
+  "behaviour": "Last-minute crammer",
+  "behaviour_how": "Exam or interview is in 2–3 weeks; will pay for anything that clearly helps right now, then stop.",
+  "objection": "Paying in USD through the App Store feels expensive in soms",
+  "habit": "you are in two or three IELTS Telegram chats"
+ },
+ {
+  "id": "P004",
+  "name": "Keisha",
+  "age": 35,
+  "segment": "Job seeker preparing an English interview (IT, outsourcing, international org)",
+  "income": 26000,
+  "behaviour": "Asks the Telegram chat first",
+  "behaviour_how": "Checks what people in IELTS Telegram groups recommend before installing anything.",
+  "objection": "Can an app really score my pronunciation accurately?",
+  "habit": "you practise speaking answers alone in your room before the exam"
+ },
+ {
+  "id": "P005",
+  "name": "Ben",
+  "age": 27,
+  "segment": "Student preparing IELTS to study abroad (family pays or part-time job)",
+  "income": 5000,
+  "behaviour": "Free-only",
+  "behaviour_how": "Uses free tiers, YouTube and ChatGPT voice; cancels every trial before it charges.",
+  "objection": "Can an app really score my pronunciation accurately?",
+  "habit": "you are in two or three IELTS Telegram chats"
+ },
+ {
+  "id": "P006",
+  "name": "Beatriz",
+  "age": 24,
+  "segment": "Student preparing IELTS to study abroad (family pays or part-time job)",
+  "income": 6000,
+  "behaviour": "Burned by another app",
+  "behaviour_how": "Tried ELSA or Praktika, hit crashes, mic problems or a surprise paywall, and is now suspicious of subscriptions.",
+  "objection": "Another subscription — I already pay for a course",
+  "habit": "you practise speaking answers alone in your room before the exam"
+ },
+ {
+  "id": "P007",
+  "name": "Selin",
+  "age": 29,
+  "segment": "Job seeker preparing an English interview (IT, outsourcing, international org)",
+  "income": 33000,
+  "behaviour": "Burned by another app",
+  "behaviour_how": "Tried ELSA or Praktika, hit crashes, mic problems or a surprise paywall, and is now suspicious of subscriptions.",
+  "objection": "Apps like this crash or don't hear the microphone",
+  "habit": "you watch English YouTube videos with Russian subtitles"
+ },
+ {
+  "id": "P008",
+  "name": "Rafael",
+  "age": 30,
+  "segment": "Job seeker preparing an English interview (IT, outsourcing, international org)",
+  "income": 6000,
+  "behaviour": "Already pays a course or tutor",
+  "behaviour_how": "Pays an IELTS centre or tutor in Bishkek ($50–140 a month) and adds apps only if the teacher recommends them.",
+  "objection": "ChatGPT voice mode is free and can also correct me",
+  "habit": "you are in two or three IELTS Telegram chats"
+ },
+ {
+  "id": "P009",
+  "name": "Isla",
+  "age": 22,
+  "segment": "Student preparing IELTS to study abroad (family pays or part-time job)",
+  "income": 8000,
+  "behaviour": "Free-only",
+  "behaviour_how": "Uses free tiers, YouTube and ChatGPT voice; cancels every trial before it charges.",
+  "objection": "ChatGPT voice mode is free and can also correct me",
+  "habit": "you study on your phone in the marshrutka on the way to university or work"
+ },
+ {
+  "id": "P010",
+  "name": "Ada",
+  "age": 34,
+  "segment": "Job seeker preparing an English interview (IT, outsourcing, international org)",
+  "income": 16000,
+  "behaviour": "Free-only",
+  "behaviour_how": "Uses free tiers, YouTube and ChatGPT voice; cancels every trial before it charges.",
+  "objection": "Can an app really score my pronunciation accurately?",
+  "habit": "you are in two or three IELTS Telegram chats"
+ },
+ {
+  "id": "P011",
+  "name": "Ana",
+  "age": 19,
+  "segment": "Working professional needing IELTS for relocation or a master's",
+  "income": 22000,
+  "behaviour": "Last-minute crammer",
+  "behaviour_how": "Exam or interview is in 2–3 weeks; will pay for anything that clearly helps right now, then stop.",
+  "objection": "Paying in USD through the App Store feels expensive in soms",
+  "habit": "you study on your phone in the marshrutka on the way to university or work"
+ },
+ {
+  "id": "P012",
+  "name": "Gabriel",
+  "age": 20,
+  "segment": "Working professional needing IELTS for relocation or a master's",
+  "income": 9000,
+  "behaviour": "Deal hunter",
+  "behaviour_how": "Waits for a discount or a yearly plan with a big saving before paying.",
+  "objection": "Apps like this crash or don't hear the microphone",
+  "habit": "you study on your phone in the marshrutka on the way to university or work"
+ },
+ {
+  "id": "P013",
+  "name": "Grace",
+  "age": 35,
+  "segment": "Student preparing IELTS to study abroad (family pays or part-time job)",
+  "income": 5000,
+  "behaviour": "Already pays a course or tutor",
+  "behaviour_how": "Pays an IELTS centre or tutor in Bishkek ($50–140 a month) and adds apps only if the teacher recommends them.",
+  "objection": "Can an app really score my pronunciation accurately?",
+  "habit": "you practise speaking answers alone in your room before the exam"
+ },
+ {
+  "id": "P014",
+  "name": "Harper",
+  "age": 19,
+  "segment": "Student preparing IELTS to study abroad (family pays or part-time job)",
+  "income": 2000,
+  "behaviour": "Already pays a course or tutor",
+  "behaviour_how": "Pays an IELTS centre or tutor in Bishkek ($50–140 a month) and adds apps only if the teacher recommends them.",
+  "objection": "My tutor already corrects my pronunciation",
+  "habit": "you watch English YouTube videos with Russian subtitles"
+ },
+ {
+  "id": "P015",
+  "name": "Mei",
+  "age": 20,
+  "segment": "Student preparing IELTS to study abroad (family pays or part-time job)",
+  "income": 4000,
+  "behaviour": "Free-only",
+  "behaviour_how": "Uses free tiers, YouTube and ChatGPT voice; cancels every trial before it charges.",
+  "objection": "ChatGPT voice mode is free and can also correct me",
+  "habit": "you watch English YouTube videos with Russian subtitles"
+ },
+ {
+  "id": "P016",
+  "name": "Rohan",
+  "age": 35,
+  "segment": "Working professional needing IELTS for relocation or a master's",
+  "income": 10000,
+  "behaviour": "Burned by another app",
+  "behaviour_how": "Tried ELSA or Praktika, hit crashes, mic problems or a surprise paywall, and is now suspicious of subscriptions.",
+  "objection": "Apps like this crash or don't hear the microphone",
+  "habit": "you watch English YouTube videos with Russian subtitles"
+ },
+ {
+  "id": "P017",
+  "name": "Darius",
+  "age": 35,
+  "segment": "Job seeker preparing an English interview (IT, outsourcing, international org)",
+  "income": 36000,
+  "behaviour": "Self-learner",
+  "behaviour_how": "Studies alone every evening with a plan; likes tracking progress and streaks.",
+  "objection": "Paying in USD through the App Store feels expensive in soms",
+  "habit": "you practise speaking answers alone in your room before the exam"
+ },
+ {
+  "id": "P018",
+  "name": "Malik",
+  "age": 27,
+  "segment": "Working professional needing IELTS for relocation or a master's",
+  "income": 24000,
+  "behaviour": "Already pays a course or tutor",
+  "behaviour_how": "Pays an IELTS centre or tutor in Bishkek ($50–140 a month) and adds apps only if the teacher recommends them.",
+  "objection": "My tutor already corrects my pronunciation",
+  "habit": "your English reading is fine, but you freeze when you have to speak"
+ },
+ {
+  "id": "P019",
+  "name": "Rosa",
+  "age": 17,
+  "segment": "Student preparing IELTS to study abroad (family pays or part-time job)",
+  "income": 3000,
+  "behaviour": "Self-learner",
+  "behaviour_how": "Studies alone every evening with a plan; likes tracking progress and streaks.",
+  "objection": "Paying in USD through the App Store feels expensive in soms",
+  "habit": "your English reading is fine, but you freeze when you have to speak"
+ },
+ {
+  "id": "P020",
+  "name": "Clara",
+  "age": 27,
+  "segment": "Student preparing IELTS to study abroad (family pays or part-time job)",
+  "income": 2000,
+  "behaviour": "Last-minute crammer",
+  "behaviour_how": "Exam or interview is in 2–3 weeks; will pay for anything that clearly helps right now, then stop.",
+  "objection": "Paying in USD through the App Store feels expensive in soms",
+  "habit": "your English reading is fine, but you freeze when you have to speak"
+ }
+]

@@ -1,0 +1,13 @@
+{
+  "id": "P010",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "I'd download it and use the 3 free fragments a day, maybe start the 7-day trial and cancel before it charges. For an interview I'm more worried about what I say than how I pronounce each sound, and ChatGPT voice already lets me practise answers for free.",
+  "objection": "I don't believe an app can really score every sound accurately, and even if it can, pronunciation is only part of passing an interview. Paying $5 a month on my salary for pronunciation only feels like too much when free tools cover most of it.",
+  "would_change_my_mind": "If people in my IELTS Telegram chats showed that the scores matched their real speaking results, and there was a one-time cheap pass for the 1–2 months until my interview instead of a subscription.",
+  "price_too_cheap": 0.5,
+  "price_cheap": 1.5,
+  "price_expensive": 3,
+  "price_too_expensive": 5
+}

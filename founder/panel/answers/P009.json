@@ -1,0 +1,13 @@
+{
+  "id": "P009",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "I'd download it, use the 3 free fragments a day in the marshrutka and start the 7-day trial, but I'd cancel before it charges like I always do. For anything beyond that I already have ChatGPT voice and YouTube for free.",
+  "objection": "ChatGPT voice mode is free and also corrects me, and this only checks pronunciation, not grammar or vocabulary, so why pay $5 a month on my budget?",
+  "would_change_my_mind": "If a week of the free trial showed my scores going up in a way ChatGPT can't show me, and there was a one-time price around $10 for the months until my exam instead of a subscription.",
+  "price_too_cheap": 0.5,
+  "price_cheap": 1.5,
+  "price_expensive": 3,
+  "price_too_expensive": 5
+}

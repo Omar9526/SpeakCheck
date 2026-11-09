@@ -1,0 +1,13 @@
+{
+  "id": "P008",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "I already pay my tutor and I only add apps she tells me to use. For an interview, pronunciation is not my real problem — what to say and grammar under pressure is, and ChatGPT voice mode does that for free. Maybe I'd use the 3 free fragments, but I wouldn't pay.",
+  "objection": "It only checks pronunciation. For a job interview they care if I can answer clearly, not if every sound is 100 out of 100, and ChatGPT already corrects me for free.",
+  "would_change_my_mind": "My tutor or people in the IELTS Telegram chats recommending it and saying it really fixed their accent before an interview.",
+  "price_too_cheap": 0.99,
+  "price_cheap": 2,
+  "price_expensive": 4,
+  "price_too_expensive": 7
+}

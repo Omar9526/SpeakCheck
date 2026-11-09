@@ -1,0 +1,13 @@
+{
+  "id": "P004",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Nobody in my Telegram chats has mentioned this app yet, so I'd maybe try the free 3 fragments, but I won't pay. For an interview I worry more about what I say and my grammar than about single sounds, and this doesn't check that.",
+  "objection": "I don't believe an app can score my pronunciation accurately enough to trust a number per sound, and pronunciation is not my main problem in an interview.",
+  "would_change_my_mind": "Several people in the IELTS or job-search Telegram groups saying it really helped them in an actual interview, with screenshots of their scores improving.",
+  "price_too_cheap": 1,
+  "price_cheap": 2.99,
+  "price_expensive": 6.99,
+  "price_too_expensive": 12
+}

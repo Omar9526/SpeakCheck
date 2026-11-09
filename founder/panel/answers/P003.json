@@ -1,0 +1,13 @@
+{
+  "id": "P003",
+  "buys": true,
+  "purchases_first_month": 1,
+  "reason_code": "need",
+  "reason": "My interview is in about three weeks and my accent is the thing I'm least sure of, so I'd run the free week hard and then pay for one month to get through to the interview date. After the interview I cancel.",
+  "objection": "It only checks pronunciation, but interviewers judge what I say and how fluently, not just sounds. And $4.99 through the App Store in dollars feels pricier than it should in soms for something I need for three weeks.",
+  "would_change_my_mind": "",
+  "price_too_cheap": 1,
+  "price_cheap": 3,
+  "price_expensive": 7,
+  "price_too_expensive": 12
+}

@@ -1,0 +1,13 @@
+{
+  "id": "P005",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "I'd download it and use the 3 free fragments a day, maybe start the 7-day trial and cancel it before it charges, same as always. Between that, YouTube and ChatGPT voice I can practise for free, and I'm not spending my own $5 a month on pronunciation alone when it doesn't even check grammar or vocabulary.",
+  "objection": "Can an app really score my pronunciation accurately? A score of 0–100 for each sound isn't my IELTS band, so how do I know it's right and not just a number?",
+  "would_change_my_mind": "If people in my IELTS Telegram chats said their real Speaking band went up after using it, plus a one-time price of about $10 for the 2–3 months until my exam instead of a subscription.",
+  "price_too_cheap": 0.99,
+  "price_cheap": 2,
+  "price_expensive": 4,
+  "price_too_expensive": 7
+}
