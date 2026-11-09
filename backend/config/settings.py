@@ -80,6 +80,10 @@ CELERY_TASK_EAGER_PROPAGATES = False
 CELERY_TASK_ACKS_LATE = True
 CELERY_TASK_TIME_LIMIT = 120
 
+# Публичный адрес для ссылок-вызовов и ссылка на App Store
+PUBLIC_BASE_URL = env("PUBLIC_BASE_URL", default="http://localhost:8000")
+APP_STORE_URL = env("APP_STORE_URL", default="https://apps.apple.com/")
+
 # Apple
 APPLE_BUNDLE_ID = env("APPLE_BUNDLE_ID", default="kg.speakcheck.app")
 

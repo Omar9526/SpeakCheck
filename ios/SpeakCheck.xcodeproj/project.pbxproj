@@ -14,11 +14,15 @@
 		06512E8301A668227901BD42 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 254DC879185E52BB064C9889 /* OnboardingView.swift */; };
 		0C1B3B1C3C502D55E496691B /* AssessmentAggregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54B62C636732F773B16B108 /* AssessmentAggregator.swift */; };
 		0F756297C664845495032A89 /* RemoteAssessmentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D779201319B34D2824E235F /* RemoteAssessmentService.swift */; };
+		1791D7A8F9AD7F06474B984E /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83429FB01B65147D1F179085 /* ShareCardView.swift */; };
 		1AB7096CFA3C4216FE339F1D /* AssessmentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9495BFE2B455DA28B484C0D4 /* AssessmentService.swift */; };
 		261D6F60706C659A576B3E93 /* StarterTexts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D4C7F117AE3E8F8A2B6631 /* StarterTexts.swift */; };
 		27E61F3D7D6255A74D765210 /* TextSegmenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88BC8287160B478F647E5C5D /* TextSegmenter.swift */; };
+		2844D68378F19884C13C4132 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726C25A999811B4A1710583C /* ShareSheet.swift */; };
 		293092EC3F8D7FFF5955CB73 /* ImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DFF44F90136037896AEF28 /* ImportView.swift */; };
 		3C1CDFB3390B1C4793CEE29F /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01347A85A0F4A2EAF60C2858 /* ResultView.swift */; };
+		43506317100ACD148F09C59A /* EngagementViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605715E9CAFB7C1BC4AF8CFE /* EngagementViews.swift */; };
+		48CE25CC84D98ECCBFEBAFB2 /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DE5C2C8F30F5B2AB110CCF /* DeepLink.swift */; };
 		4C904DC84FEB110C1FEFFB5E /* TextReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92AA1763F1C86D144261114C /* TextReviewView.swift */; };
 		539AABB93AAB4009AB70DC29 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC82F4F4122512EDBAB7FEF2 /* Theme.swift */; };
 		670633C2E76BE8B43B97F73E /* WordDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CB60120B7E3827BCAE0E0 /* WordDetailView.swift */; };
@@ -27,6 +31,7 @@
 		7A207710A386E44CCCC94441 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5451AC89AA920ADA84CE8B24 /* Assets.xcassets */; };
 		919471B372B62D38E2A81125 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4BD8235D77F911A6608175 /* FlowLayout.swift */; };
 		9AD064E4A9D071213C802EEA /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A34ABE9AD973967A325FA7 /* RootView.swift */; };
+		9AE1025213DEEE66251BF3F1 /* Engagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244052E89D55CC7C01781799 /* Engagement.swift */; };
 		A188017FBAAF30AFC1F22D4B /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D5C1ECBEC519A3BEC78C1D /* AppStore.swift */; };
 		A65A19F50E00FAD56FCDCC9C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44439719636B9E1937637AD /* HomeView.swift */; };
 		AE310F59DB4D11DD34BC0AF5 /* SpeechPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F5CF026341EFF91C4EA135 /* SpeechPlayer.swift */; };
@@ -67,20 +72,25 @@
 		1C13985E41752FB44E9AAF5A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1D779201319B34D2824E235F /* RemoteAssessmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteAssessmentService.swift; sourceTree = "<group>"; };
 		1E23D6AF1C58D6CC9D678FDB /* TextImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextImportTests.swift; sourceTree = "<group>"; };
+		244052E89D55CC7C01781799 /* Engagement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engagement.swift; sourceTree = "<group>"; };
 		254DC879185E52BB064C9889 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		2F1AC9D1A4115C89D2D6B4EF /* ScoreViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreViews.swift; sourceTree = "<group>"; };
 		30D4C7F117AE3E8F8A2B6631 /* StarterTexts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarterTexts.swift; sourceTree = "<group>"; };
 		326F37873B217AA02B734A32 /* ReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderView.swift; sourceTree = "<group>"; };
 		3B287A8EAB017F560E05C95C /* sample.docx */ = {isa = PBXFileReference; path = sample.docx; sourceTree = "<group>"; };
 		4E3DB513B06E598BA4B8A00D /* DOCXReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DOCXReader.swift; sourceTree = "<group>"; };
+		52DE5C2C8F30F5B2AB110CCF /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
 		5451AC89AA920ADA84CE8B24 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		56822C65D8ADE898143D6253 /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
 		57A34ABE9AD973967A325FA7 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		57CD262AAD4631A614EFC163 /* ScoreBand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBand.swift; sourceTree = "<group>"; };
+		605715E9CAFB7C1BC4AF8CFE /* EngagementViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EngagementViews.swift; sourceTree = "<group>"; };
 		6525EBEC4E4907399FEDF9C4 /* WaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
 		65CF6332CC660BF52BA8A180 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		67B745475FB75F92AAFF9C07 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		68903FB82B2298A909361C27 /* ImportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportViewModel.swift; sourceTree = "<group>"; };
+		726C25A999811B4A1710583C /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
+		83429FB01B65147D1F179085 /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
 		8727570FD8C4E38F6992072E /* Buttons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Buttons.swift; sourceTree = "<group>"; };
 		88BC8287160B478F647E5C5D /* TextSegmenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextSegmenter.swift; sourceTree = "<group>"; };
 		88FEF268E1305E737DDCE7C9 /* DocumentExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentExtractor.swift; sourceTree = "<group>"; };
@@ -142,6 +152,7 @@
 				B777A4C78981631B0C91A0C7 /* Reader */,
 				04DA92D753499FB71C737A59 /* Result */,
 				DCD18FB515921A959F0C9AA4 /* Settings */,
+				C788C3C39E3E46E62A0CC1B5 /* Share */,
 				1EDA93BFCF7A80B4969BE27C /* WordDetail */,
 			);
 			path = Features;
@@ -168,6 +179,7 @@
 			isa = PBXGroup;
 			children = (
 				C1D5C1ECBEC519A3BEC78C1D /* AppStore.swift */,
+				52DE5C2C8F30F5B2AB110CCF /* DeepLink.swift */,
 				57A34ABE9AD973967A325FA7 /* RootView.swift */,
 				FF138C7CAC8B22F3D1542BFC /* Router.swift */,
 				044F40BF3C4F64F797447E11 /* SpeakCheckApp.swift */,
@@ -179,6 +191,7 @@
 			isa = PBXGroup;
 			children = (
 				574145B94AC331633F08D1D7 /* Audio */,
+				94268F2719E8FD98B930FE84 /* Engagement */,
 				32C81956DA4BB8224197C0E6 /* Import */,
 				F74EDD8772B422413D3CA1AB /* Models */,
 				C1FE1C5900F48FA22790862A /* Network */,
@@ -247,6 +260,14 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+		94268F2719E8FD98B930FE84 /* Engagement */ = {
+			isa = PBXGroup;
+			children = (
+				244052E89D55CC7C01781799 /* Engagement.swift */,
+			);
+			path = Engagement;
+			sourceTree = "<group>";
+		};
 		A325201C00C39E3FEF55006D /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
@@ -291,6 +312,15 @@
 			path = Network;
 			sourceTree = "<group>";
 		};
+		C788C3C39E3E46E62A0CC1B5 /* Share */ = {
+			isa = PBXGroup;
+			children = (
+				83429FB01B65147D1F179085 /* ShareCardView.swift */,
+				726C25A999811B4A1710583C /* ShareSheet.swift */,
+			);
+			path = Share;
+			sourceTree = "<group>";
+		};
 		D02EFF5E40D041B46F141111 /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -312,6 +342,7 @@
 			isa = PBXGroup;
 			children = (
 				C0130AE7D0C9FF17AA0C49C4 /* DocumentView.swift */,
+				605715E9CAFB7C1BC4AF8CFE /* EngagementViews.swift */,
 				E44439719636B9E1937637AD /* HomeView.swift */,
 			);
 			path = Home;
@@ -486,9 +517,12 @@
 				059AA20D47B0793F2757571F /* Buttons.swift in Sources */,
 				76E1FAC7BC9BE00FDF664FAD /* Cards.swift in Sources */,
 				EC0FCF275F2CD120E69C262F /* DOCXReader.swift in Sources */,
+				48CE25CC84D98ECCBFEBAFB2 /* DeepLink.swift in Sources */,
 				F5B201598A859767FBF34C8C /* DocumentExtractor.swift in Sources */,
 				F672CBC4D83F96C73BA576AD /* DocumentView.swift in Sources */,
 				02FBA332D057B2B96612F80C /* Domain.swift in Sources */,
+				9AE1025213DEEE66251BF3F1 /* Engagement.swift in Sources */,
+				43506317100ACD148F09C59A /* EngagementViews.swift in Sources */,
 				919471B372B62D38E2A81125 /* FlowLayout.swift in Sources */,
 				DC55B325FA09813569E4A23E /* HistoryView.swift in Sources */,
 				A65A19F50E00FAD56FCDCC9C /* HomeView.swift in Sources */,
@@ -505,6 +539,8 @@
 				FDD5B7875BF70E17AD45CF88 /* ScoreBand.swift in Sources */,
 				FD0E87C6E6D893A47740EC35 /* ScoreViews.swift in Sources */,
 				C487888CA4E10B7A4C115F01 /* SettingsView.swift in Sources */,
+				1791D7A8F9AD7F06474B984E /* ShareCardView.swift in Sources */,
+				2844D68378F19884C13C4132 /* ShareSheet.swift in Sources */,
 				B6FCCCF9EAFF97B0B752C0A3 /* SpeakCheckApp.swift in Sources */,
 				AE310F59DB4D11DD34BC0AF5 /* SpeechPlayer.swift in Sources */,
 				261D6F60706C659A576B3E93 /* StarterTexts.swift in Sources */,

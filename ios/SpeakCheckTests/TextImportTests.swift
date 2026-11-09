@@ -62,3 +62,48 @@ struct TextImportTests {
 }
 
 final class BundleToken {}
+
+struct EngagementTests {
+    private func attempt(daysAgo: Int, score: Double = 80, words: [WordAssessment] = []) -> ReadingAttempt {
+        ReadingAttempt(id: UUID(), segmentID: UUID(), documentID: UUID(), durationMs: 1000, status: .completed,
+                       createdAt: Calendar.current.date(byAdding: .day, value: -daysAgo, to: .now)!,
+                       assessment: Assessment(id: UUID(), overall: score, accuracy: nil, fluency: nil, completeness: nil,
+                                              prosody: nil, words: words, scoreVersion: "t"),
+                       failureReason: nil)
+    }
+
+    @Test func streakCountsConsecutiveDays() {
+        #expect(Engagement.streak(attempts: []) == 0)
+        #expect(Engagement.streak(attempts: [attempt(daysAgo: 0), attempt(daysAgo: 1), attempt(daysAgo: 2)]) == 3)
+        // вчера и позавчера — серия жива, пока сегодня не закончилось
+        #expect(Engagement.streak(attempts: [attempt(daysAgo: 1), attempt(daysAgo: 2)]) == 2)
+        #expect(Engagement.streak(attempts: [attempt(daysAgo: 2), attempt(daysAgo: 3)]) == 0)
+    }
+
+    @Test func difficultWordsSkipLearned() {
+        func w(_ word: String, _ score: Double?, _ e: WordErrorType = .none) -> WordAssessment {
+            WordAssessment(index: 0, word: word, startMs: nil, endMs: nil, score: score, errorType: e, phonemes: nil)
+        }
+        let list = Engagement.difficultWords(attempts: [
+            attempt(daysAgo: 0, words: [w("Thought,", 40), w("world", 50), w("access", nil, .omission), w("extra", 10, .insertion)]),
+            attempt(daysAgo: 1, words: [w("thought", 55), w("world", 92)]),
+        ])
+        #expect(list.map(\.word) == ["thought", "access"])
+        #expect(list.first?.misses == 2)
+    }
+
+    @Test func deepLinkParsing() {
+        #expect(DeepLink.challengeCode(from: URL(string: "speakcheck://c/abcd2345")!) == "abcd2345")
+        #expect(DeepLink.challengeCode(from: URL(string: "https://speakcheck.example.com/c/abcd2345")!) == "abcd2345")
+        #expect(DeepLink.challengeCode(from: URL(string: "speakcheck://c/../../etc")!) == nil)
+        #expect(DeepLink.challengeCode(from: URL(string: "https://x.com/other/abcd2345")!) == nil)
+    }
+
+    @Test func russianPlural() {
+        #expect(StreakBadge.days(1) == "день")
+        #expect(StreakBadge.days(3) == "дня")
+        #expect(StreakBadge.days(5) == "дней")
+        #expect(StreakBadge.days(11) == "дней")
+        #expect(StreakBadge.days(22) == "дня")
+    }
+}

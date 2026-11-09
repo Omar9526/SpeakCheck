@@ -9,6 +9,11 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: Theme.Spacing.xl) {
                 header
 
+                if !store.attempts.isEmpty {
+                    StreakBadge(streak: Engagement.streak(attempts: store.attempts),
+                                practicedToday: Engagement.practicedToday(attempts: store.attempts))
+                }
+
                 if let doc = store.continueDocument {
                     continueCard(doc)
                 }
@@ -22,6 +27,20 @@ struct HomeView: View {
 
                 starterSection
 
+                WordOfDayCard(word: Engagement.wordOfTheDay()) {
+                    practice(Engagement.wordOfTheDay().example, title: "Слово дня: \(Engagement.wordOfTheDay().word)")
+                }
+
+                let difficult = Engagement.difficultWords(attempts: store.attempts)
+                if !difficult.isEmpty {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.m) {
+                        SectionHeader(title: "Мои трудные слова")
+                        DifficultWordsCard(words: difficult) { word in
+                            practice(word, title: "Тренировка: \(word)")
+                        }
+                    }
+                }
+
                 recentSection
             }
             .padding(.horizontal, Theme.Spacing.l)
@@ -29,6 +48,17 @@ struct HomeView: View {
         }
         .screenBackground()
         .toolbar(.hidden, for: .navigationBar)
+    }
+
+    /// Мини-тренировка: документ из одного слова/фразы, сразу на экран чтения.
+    private func practice(_ text: String, title: String) {
+        let doc = SCDocument(
+            id: UUID(), title: title, source: .manual, status: .ready,
+            segments: [ReadingSegment(id: UUID(), sequence: 0, referenceText: text, pageNumber: nil)],
+            createdAt: .now, bestScore: nil, completedSegments: 0
+        )
+        store.add(doc)
+        router.push(.reader(documentID: doc.id, segmentIndex: 0))
     }
 
     private var header: some View {

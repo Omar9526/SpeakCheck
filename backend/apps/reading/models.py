@@ -117,3 +117,15 @@ class AIExplanation(models.Model):
     encouragement = models.TextField(blank=True)
     is_fallback = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Challenge(models.Model):
+    """«Брось вызов другу»: короткий код → тот же текст и результат автора для сравнения."""
+
+    code = models.CharField(max_length=12, unique=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="challenges")
+    title = models.CharField(max_length=120)
+    reference_text = models.TextField()
+    owner_score = models.FloatField(null=True)
+    opened_count = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)

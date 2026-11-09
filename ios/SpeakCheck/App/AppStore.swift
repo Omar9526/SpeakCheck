@@ -39,6 +39,10 @@ final class AppStore {
         documents.first { $0.id == id }
     }
 
+    func document(challenge: ChallengeInfo) -> SCDocument? {
+        documents.first { $0.challenge?.code == challenge.code }
+    }
+
     func attempt(id: UUID) -> ReadingAttempt? {
         attempts.first { $0.id == id }
     }

@@ -9,6 +9,9 @@ struct ResultView: View {
     @State private var explanation: AIExplanation?
     @State private var explanationFailed = false
     @State private var loadingExplanation = false
+    @State private var sharePayload: SharePayload?
+    @State private var challengeBusy = false
+    @State private var shareError: String?
 
     var body: some View {
         Group {
@@ -30,7 +33,13 @@ struct ResultView: View {
         let segmentText = doc.segments.indices.contains(segmentIndex) ? doc.segments[segmentIndex].referenceText : ""
         return ScrollView {
             VStack(alignment: .leading, spacing: Theme.Spacing.l) {
+                if let challenge = doc.challenge, let mine = assessment.overall {
+                    ChallengeComparison(mine: mine, friend: challenge.ownerScore)
+                }
                 scoreCard(assessment)
+                if let overall = assessment.overall {
+                    shareCard(score: overall, assessment: assessment, doc: doc, text: segmentText, attempt: attempt)
+                }
                 wordsCard(assessment)
                 explanationCard(assessment: assessment, text: segmentText)
 
@@ -56,11 +65,81 @@ struct ResultView: View {
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                ShareLink(item: ShareCard.text(score: assessment.overall), preview: SharePreview("Мой результат SpeakCheck")) {
+                Button {
+                    shareStory(assessment: assessment, doc: doc, text: segmentText)
+                } label: {
                     Image(systemName: "square.and.arrow.up")
                 }
                 .accessibilityLabel("Поделиться результатом")
+                .disabled(assessment.overall == nil)
             }
+        }
+        .sheet(item: $sharePayload) { payload in
+            ShareSheet(items: payload.items).presentationDetents([.medium, .large])
+        }
+        .alert("Не получилось", isPresented: Binding(get: { shareError != nil }, set: { if !$0 { shareError = nil } })) {
+            Button("Понятно", role: .cancel) {}
+        } message: {
+            Text(shareError ?? "")
+        }
+    }
+
+    // MARK: Share & challenge (вирусность)
+
+    private func shareCard(score: Double, assessment: Assessment, doc: SCDocument, text: String, attempt: ReadingAttempt) -> some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.m) {
+            Text(score >= ScoreThresholds.default.good ? "Отличный результат — похвастайтесь!" : "Позовите друга попробовать")
+                .font(.headline)
+                .foregroundStyle(Theme.Colors.textPrimary)
+            HStack(spacing: Theme.Spacing.m) {
+                Button {
+                    shareStory(assessment: assessment, doc: doc, text: text)
+                } label: {
+                    Label("В сторис", systemImage: "photo.on.rectangle.angled")
+                }
+                .buttonStyle(.secondary)
+                Button {
+                    Task { await challengeFriend(attempt: attempt, score: score) }
+                } label: {
+                    if challengeBusy {
+                        ProgressView().tint(.white)
+                    } else {
+                        Label("Вызов другу", systemImage: "flag.2.crossed.fill")
+                    }
+                }
+                .buttonStyle(.primary)
+                .disabled(challengeBusy)
+            }
+        }
+        .card()
+    }
+
+    private func shareStory(assessment: Assessment, doc: SCDocument, text: String) {
+        guard let score = assessment.overall else { return }
+        let hard = assessment.words
+            .filter { $0.score != nil && !$0.isOmitted && $0.errorType != .insertion }
+            .min { ($0.score ?? 100) < ($1.score ?? 100) }
+            .flatMap { ($0.score ?? 100) < ScoreThresholds.default.good ? $0.word.trimmingCharacters(in: .punctuationCharacters) : nil }
+        let renderer = ImageRenderer(content: ShareCardView(
+            score: score, title: doc.title, excerpt: String(text.prefix(160)), hardWord: hard,
+            streak: Engagement.streak(attempts: store.attempts)))
+        renderer.scale = 3
+        var items: [Any] = [ShareCard.text(score: score)]
+        if let image = renderer.uiImage { items.insert(image, at: 0) }
+        sharePayload = SharePayload(items: items)
+    }
+
+    private func challengeFriend(attempt: ReadingAttempt, score: Double) async {
+        challengeBusy = true
+        defer { challengeBusy = false }
+        do {
+            let challenge = try await service.createChallenge(attemptID: attempt.id)
+            let message = "Я прочитал(а) этот текст на английском на \(Int(score.rounded()))% 🎙️ Сможешь лучше? Прими вызов в SpeakCheck:"
+            sharePayload = SharePayload(items: [message, challenge.url])
+        } catch let error as AssessmentError {
+            shareError = error == .notConfigured ? "Вызовы заработают, когда подключится сервер." : error.reason
+        } catch {
+            shareError = "Проверьте подключение к интернету и попробуйте ещё раз."
         }
     }
 
@@ -277,7 +356,44 @@ enum LocalTips {
     }
 }
 
-/// Текст для «Поделиться» (на этапе 6 — картинка-карточка для сторис).
+/// Сравнение с другом, бросившим вызов.
+struct ChallengeComparison: View {
+    var mine: Double
+    var friend: Double?
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.l) {
+            column("Вы", mine, highlight: friend.map { mine >= $0 } ?? true)
+            Text("vs").font(.headline).foregroundStyle(Theme.Colors.textTertiary)
+            column("Друг", friend, highlight: friend.map { $0 > mine } ?? false)
+            Spacer(minLength: 0)
+            Text(verdict)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Theme.Colors.textPrimary)
+                .multilineTextAlignment(.trailing)
+        }
+        .card()
+        .accessibilityElement(children: .combine)
+    }
+
+    private var verdict: String {
+        guard let friend else { return "Вызов принят!" }
+        if mine > friend { return "Вы победили! 🏆" }
+        if mine == friend { return "Ничья 🤝" }
+        return "Ещё попытка? 💪"
+    }
+
+    private func column(_ title: String, _ value: Double?, highlight: Bool) -> some View {
+        VStack(spacing: 2) {
+            Text(title).font(.caption).foregroundStyle(Theme.Colors.textSecondary)
+            Text(value.map { "\(Int($0.rounded()))%" } ?? "—")
+                .font(.title2.weight(.bold).monospacedDigit())
+                .foregroundStyle(highlight ? Theme.Colors.success : Theme.Colors.textPrimary)
+        }
+    }
+}
+
+/// Текст для «Поделиться».
 enum ShareCard {
     static func text(score: Double?) -> String {
         if let score {

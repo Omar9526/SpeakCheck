@@ -7,7 +7,7 @@ struct RemoteAssessmentService: AssessmentService {
     static var isAvailable: Bool { APIClient.baseURL != nil }
 
     func assess(draft: RecordingDraft, document: SCDocument,
-                onStatus: @escaping @Sendable (AssessmentStage) -> Void) async throws -> Assessment {
+                onStatus: @escaping @Sendable (AssessmentStage) -> Void) async throws -> AssessmentOutcome {
         do {
             onStatus(.uploading)
             try await sync(document)
@@ -27,7 +27,7 @@ struct RemoteAssessmentService: AssessmentService {
             onStatus(.finishing)
             if attempt.status == "failed" { throw Self.map(failure: attempt.failureCode) }
             guard let dto = attempt.assessment else { throw AssessmentError.lowConfidence }
-            return dto.model
+            return AssessmentOutcome(attemptID: attempt.id, assessment: dto.model)
         } catch let error as APIClient.ClientError {
             throw Self.map(error)
         }
@@ -40,6 +40,23 @@ struct RemoteAssessmentService: AssessmentService {
             let dto: ExplanationDTO = try await api.post(
                 "assessments/\(assessment.id.uuidString.lowercased())/explanation", json: Body(language: language))
             return AIExplanation(summary: dto.summary, tips: dto.tips, encouragement: dto.encouragement, isFallback: dto.isFallback)
+        } catch let error as APIClient.ClientError {
+            throw Self.map(error)
+        }
+    }
+
+    func createChallenge(attemptID: UUID) async throws -> ChallengeInfo {
+        struct Body: Encodable, Sendable { let attemptId: UUID }
+        do {
+            return try await api.post("challenges", json: Body(attemptId: attemptID))
+        } catch let error as APIClient.ClientError {
+            throw Self.map(error)
+        }
+    }
+
+    func fetchChallenge(code: String) async throws -> ChallengeInfo {
+        do {
+            return try await api.get("challenges/\(code)")
         } catch let error as APIClient.ClientError {
             throw Self.map(error)
         }

@@ -5,6 +5,8 @@ struct ScoreRing: View {
     var score: Double
     var lineWidth: CGFloat = 12
     var showsVerdict = true
+    /// false — рисовать сразу (для ImageRenderer, где onAppear-анимация не выполняется).
+    var animate = true
 
     @State private var animated: Double = 0
 
@@ -15,7 +17,7 @@ struct ScoreRing: View {
             Circle()
                 .stroke(Theme.Colors.surfaceRaised, lineWidth: lineWidth)
             Circle()
-                .trim(from: 0, to: animated / 100)
+                .trim(from: 0, to: (animate ? animated : score) / 100)
                 .stroke(
                     AngularGradient(
                         colors: [Theme.Colors.accent, Theme.Colors.accentLight, Theme.Colors.accent],

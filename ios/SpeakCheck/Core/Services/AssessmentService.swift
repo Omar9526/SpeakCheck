@@ -2,9 +2,17 @@ import Foundation
 
 /// Оценка чтения. Реализация ходит на backend, который вызывает Azure Speech;
 /// клиент никогда не вычисляет и не подставляет проценты сам (ТЗ, раздел 15).
+/// Результат оценки: id попытки на сервере + метрики Azure.
+struct AssessmentOutcome: Sendable {
+    let attemptID: UUID
+    let assessment: Assessment
+}
+
 protocol AssessmentService: Sendable {
     func assess(draft: RecordingDraft, document: SCDocument,
-                onStatus: @escaping @Sendable (AssessmentStage) -> Void) async throws -> Assessment
+                onStatus: @escaping @Sendable (AssessmentStage) -> Void) async throws -> AssessmentOutcome
+    func createChallenge(attemptID: UUID) async throws -> ChallengeInfo
+    func fetchChallenge(code: String) async throws -> ChallengeInfo
     func explain(assessment: Assessment, referenceText: String) async throws -> AIExplanation
 }
 
@@ -48,7 +56,7 @@ enum AssessmentError: Error, Equatable {
 /// Используется, пока backend не настроен (нет BASE_URL). Честно сообщает об этом.
 struct UnconfiguredAssessmentService: AssessmentService {
     func assess(draft: RecordingDraft, document: SCDocument,
-                onStatus: @escaping @Sendable (AssessmentStage) -> Void) async throws -> Assessment {
+                onStatus: @escaping @Sendable (AssessmentStage) -> Void) async throws -> AssessmentOutcome {
         onStatus(.uploading)
         try await Task.sleep(for: .milliseconds(600))
         throw AssessmentError.notConfigured
@@ -57,4 +65,7 @@ struct UnconfiguredAssessmentService: AssessmentService {
     func explain(assessment: Assessment, referenceText: String) async throws -> AIExplanation {
         throw AssessmentError.notConfigured
     }
+
+    func createChallenge(attemptID: UUID) async throws -> ChallengeInfo { throw AssessmentError.notConfigured }
+    func fetchChallenge(code: String) async throws -> ChallengeInfo { throw AssessmentError.notConfigured }
 }

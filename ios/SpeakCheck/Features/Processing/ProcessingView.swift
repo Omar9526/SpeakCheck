@@ -139,11 +139,12 @@ struct ProcessingView: View {
         task?.cancel()
         task = Task {
             do {
-                let assessment = try await service.assess(draft: draft, document: doc) { stage in
+                let outcome = try await service.assess(draft: draft, document: doc) { stage in
                     Task { @MainActor in self.stage = stage }
                 }
+                let assessment = outcome.assessment
                 let attempt = ReadingAttempt(
-                    id: UUID(), segmentID: segment.id, documentID: doc.id, durationMs: draft.durationMs,
+                    id: outcome.attemptID, segmentID: segment.id, documentID: doc.id, durationMs: draft.durationMs,
                     status: .completed, createdAt: .now, assessment: assessment, failureReason: nil
                 )
                 store.record(attempt)

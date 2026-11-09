@@ -305,3 +305,36 @@ def test_retryable_failure_can_be_resent_with_same_key(api, document, wav):
     assert second.status_code == 202 and second.data["id"] != first.data["id"]
     assert api.get(f"/api/v1/attempts/{second.data['id']}").data["status"] == "completed"
     assert ReadingAttempt.objects.count() == 1
+
+
+# ---------- challenges ----------
+
+def test_challenge_flow(api, document, wav, other_user):
+    attempt = _completed(api, document, wav)
+    r = api.post("/api/v1/challenges", {"attempt_id": attempt["id"]}, format="json")
+    assert r.status_code == 201 and r.data["owner_score"] == 85.3 and "/c/" in r.data["url"]
+    code = r.data["code"]
+    assert api.post("/api/v1/challenges", {"attempt_id": attempt["id"]}, format="json").data["code"] == code
+    friend = client_for(other_user)
+    got = friend.get(f"/api/v1/challenges/{code}")
+    assert got.status_code == 200 and got.data["reference_text"] == "Hello world."
+    from rest_framework.test import APIClient
+
+    page = APIClient().get(f"/c/{code}")
+    assert page.status_code == 200 and "85%" in page.content.decode() and f"speakcheck://c/{code}" in page.content.decode()
+
+
+def test_challenge_requires_own_completed_attempt(api, document, wav, other_user):
+    attempt = _completed(api, document, wav)
+    r = client_for(other_user).post("/api/v1/challenges", {"attempt_id": attempt["id"]}, format="json")
+    assert r.status_code == 404
+
+
+def test_challenge_landing_escapes_html(api, user):
+    from rest_framework.test import APIClient
+
+    from apps.reading.models import Challenge
+
+    Challenge.objects.create(code="xss12345", owner=user, title="t", reference_text="<script>alert(1)</script>", owner_score=50)
+    body = APIClient().get("/c/xss12345").content.decode()
+    assert "<script>alert" not in body and "&lt;script&gt;" in body

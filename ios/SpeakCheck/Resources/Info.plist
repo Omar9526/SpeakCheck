@@ -4,6 +4,17 @@
 <dict>
 	<key>SCAPIBaseURL</key>
 	<string>$(SC_API_BASE_URL)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>kg.speakcheck.app.challenge</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>speakcheck</string>
+			</array>
+		</dict>
+	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsLocalNetworking</key>

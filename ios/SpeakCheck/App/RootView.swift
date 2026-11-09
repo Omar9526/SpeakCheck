@@ -3,6 +3,9 @@ import SwiftUI
 struct RootView: View {
     @Environment(AppStore.self) private var store
     @Environment(Router.self) private var router
+    @Environment(\.assessmentService) private var service
+    @State private var linkError: String?
+    @State private var debugShareCard = false
 
     var body: some View {
         @Bindable var router = router
@@ -32,9 +35,41 @@ struct RootView: View {
             }
         }
         .animation(.easeInOut, value: store.hasCompletedOnboarding)
+        .overlay {
+            if debugShareCard {
+                ZStack {
+                    Color.black.ignoresSafeArea()
+                    ShareCardView(score: 85, title: "Зачем учить английский",
+                                  excerpt: StarterTexts.all[0].paragraphs[0], hardWord: "communicate", streak: 3)
+                }
+            }
+        }
+        .onOpenURL { url in
+            guard let code = DeepLink.challengeCode(from: url) else { return }
+            Task { await openChallenge(code) }
+        }
+        .alert("Вызов недоступен", isPresented: Binding(get: { linkError != nil }, set: { if !$0 { linkError = nil } })) {
+            Button("Понятно", role: .cancel) {}
+        } message: {
+            Text(linkError ?? "")
+        }
         #if DEBUG
         .onAppear(perform: applyDebugRoute)
         #endif
+    }
+
+    /// Друг открыл ссылку-вызов: создаём документ с тем же текстом и сразу открываем чтение.
+    private func openChallenge(_ code: String) async {
+        do {
+            let challenge = try await service.fetchChallenge(code: code)
+            store.hasCompletedOnboarding = true
+            let doc = store.document(challenge: challenge) ?? store.add(DeepLink.document(from: challenge))
+            router.tab = .home
+            router.homePath = NavigationPath()
+            router.homePath.append(Route.reader(documentID: doc.id, segmentIndex: 0))
+        } catch {
+            linkError = "Не удалось открыть вызов. Проверьте интернет и попробуйте снова."
+        }
     }
 
     #if DEBUG
@@ -60,6 +95,7 @@ struct RootView: View {
             if let attempt, let word = attempt.assessment?.words.first(where: { $0.errorType == .mispronunciation }) {
                 router.homePath.append(Route.wordDetail(attemptID: attempt.id, wordIndex: word.index))
             }
+        case "sharecard": debugShareCard = true
         case "history": router.tab = .progress
         case "settings": router.tab = .profile
         default: break

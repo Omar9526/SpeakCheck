@@ -42,6 +42,8 @@ struct SCDocument: Identifiable, Hashable, Codable, Sendable {
     /// Лучшая взвешенная оценка по документу (если есть завершённые попытки).
     var bestScore: Double?
     var completedSegments: Int
+    /// Документ создан из вызова друга — для сравнения результатов.
+    var challenge: ChallengeInfo? = nil
 
     var progress: Double {
         guard !segments.isEmpty else { return 0 }
@@ -145,4 +147,13 @@ struct RecordingDraft: Identifiable, Hashable, Codable, Sendable {
     var createdAt: Date
 
     var fileURL: URL { AudioRecorder.draftsDirectory.appendingPathComponent(fileName) }
+}
+
+/// Вызов друга (сервер: /challenges). Балл автора — из его реальной попытки.
+struct ChallengeInfo: Hashable, Codable, Sendable {
+    var code: String
+    var title: String
+    var referenceText: String
+    var ownerScore: Double?
+    var url: URL
 }

@@ -42,8 +42,8 @@ xcodebuild -project SpeakCheck.xcodeproj -scheme SpeakCheck -configuration Debug
 | 0 | Окружение (XcodeGen, uv, Python 3.12, gh) | ✅ |
 | 1 | Дизайн-система, навигация, все экраны | ✅ |
 | 2 | Импорт PDF/DOCX/TXT/фото, OCR, сегментация, запись WAV 16 кГц | ✅ (в коде, проверка на устройстве) |
-| 3 | Django/DRF, PostgreSQL, Sign in with Apple, API | ⏳ |
-| 4 | Azure Pronunciation Assessment | ⏳ |
-| 5 | DeepSeek-объяснения | ⏳ |
-| 6 | Вирусность: карточка для сторис, вызов другу, серия дней, челленджи | ⏳ |
+| 3 | Django/DRF, PostgreSQL, Sign in with Apple, API, связка с iOS | ✅ (локально на SQLite; Postgres — при деплое) |
+| 4 | Azure Pronunciation Assessment | ✅ код + тесты; нужен ключ Azure для живой проверки |
+| 5 | DeepSeek-объяснения | ✅ код + тесты; нужен ключ DeepSeek |
+| 6 | Вирусность: карточка для сторис, вызов другу (ссылка + лендинг), серия дней, слово дня, трудные слова | ✅ |
 | 7 | Тесты, доступность, TestFlight | ⏳ |
