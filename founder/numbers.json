@@ -1,0 +1,60 @@
+{
+  "business": "SpeakCheck — тренажёр IELTS Speaking и собеседований (подписка Pro, гипотеза цены)",
+  "unit": "платящий подписчик-месяц",
+  "price": 4.99,
+  "variable": [
+    {
+      "label": "Комиссия App Store 15% (Small Business Program)",
+      "cost": 0.749
+    },
+    {
+      "label": "Azure: 150 попыток × 20 с у платящего",
+      "cost": 1.083
+    },
+    {
+      "label": "DeepSeek: 150 объяснений у платящего",
+      "cost": 0.105
+    },
+    {
+      "label": "Бесплатные: 19 польз. × 12 попыток (Azure+DeepSeek)",
+      "cost": 1.806
+    }
+  ],
+  "fixed_monthly": [
+    {
+      "label": "VPS-сервер (оценка)",
+      "cost": 10
+    },
+    {
+      "label": "Apple Developer Program $99/год",
+      "cost": 8.25
+    },
+    {
+      "label": "Домен (оценка)",
+      "cost": 1.5
+    }
+  ],
+  "startup": [
+    {
+      "label": "Запуск: листовки/материалы для IELTS-центров Бишкека (оценка)",
+      "cost": 150
+    }
+  ],
+  "days_per_month": 30,
+  "capacity_per_day": 100000,
+  "plan_per_day": 10,
+  "ramp_per_day": [
+    0.17,
+    0.5,
+    1,
+    1.67,
+    2.5,
+    3.33,
+    4.33,
+    5.33,
+    6.33,
+    7.33,
+    8.67,
+    10
+  ]
+}
