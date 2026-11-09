@@ -12,6 +12,7 @@ from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
 from core.errors import APIError
+from core.validation import parse_uuid
 from services import audio, scoring, storage
 
 from .models import AIExplanation, Assessment, Document, ReadingAttempt, ReadingSegment
@@ -36,6 +37,8 @@ class DocumentListCreateView(generics.ListCreateAPIView):
         return DocumentSerializer if self.request.method == "POST" else DocumentListSerializer
 
     def create(self, request, *args, **kwargs):
+        if Document.objects.filter(user=request.user).count() >= settings.MAX_DOCUMENTS_PER_USER:
+            raise APIError("quota_exceeded", "Достигнут лимит документов — удалите старые.", 429)
         s = DocumentSerializer(data=request.data, context={"request": request})
         s.is_valid(raise_exception=True)
         doc = s.save()
@@ -155,7 +158,10 @@ class HistoryView(generics.ListAPIView):
 
     def get_queryset(self):
         qs = ReadingAttempt.objects.filter(user=self.request.user).select_related("assessment")
-        if doc := self.request.query_params.get("document"):
+        if (raw := self.request.query_params.get("document")) is not None:
+            doc = parse_uuid(raw)
+            if doc is None:
+                raise APIError("validation_error", "Некорректный id документа.", 400)
             qs = qs.filter(document_id=doc)
         return qs
 

@@ -25,12 +25,14 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
     "apps.accounts",
     "apps.reading",
 ]
 
 MIDDLEWARE = [
     "core.middleware.RequestIDMiddleware",
+    "core.middleware.SecurityHeadersMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -57,6 +59,11 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "core.pagination.Pagination",
     "PAGE_SIZE": 20,
     "EXCEPTION_HANDLER": "core.errors.exception_handler",
+    # Только JSON: без HTML-интерфейса DRF (меньше поверхность для XSS/CSRF).
+    "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
+    "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],
+    # Один доверенный прокси (Caddy) — IP клиента берётся из X-Forwarded-For корректно, подделка не помогает.
+    "NUM_PROXIES": env.int("NUM_PROXIES", default=1),
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.UserRateThrottle",
         "rest_framework.throttling.AnonRateThrottle",
@@ -64,6 +71,7 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_RATES": {
         "user": env("THROTTLE_USER", default="120/min"),
         "anon": env("THROTTLE_ANON", default="20/min"),
+        "guest": env("THROTTLE_GUEST", default="10/hour"),
         "attempts": env("THROTTLE_ATTEMPTS", default="20/min"),
         "explanations": env("THROTTLE_EXPLANATIONS", default="20/min"),
     },
@@ -74,6 +82,9 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=60),
     "ROTATE_REFRESH_TOKENS": True,
+    # Старый refresh-токен после обновления и после выхода больше не принимается.
+    "BLACKLIST_AFTER_ROTATION": True,
+    "ALGORITHM": "HS256",
     "USER_ID_FIELD": "id",
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
@@ -84,6 +95,16 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # Celery: без REDIS_URL задачи выполняются синхронно (dev/тесты).
 REDIS_URL = env("REDIS_URL", default="")
 CELERY_BROKER_URL = REDIS_URL or "memory://"
+
+# Счётчики лимитов запросов должны быть общими для всех процессов gunicorn —
+# иначе каждый процесс считает свой лимит и защита ослабевает в N раз.
+CACHES = {
+    "default": {"BACKEND": "django.core.cache.backends.redis.RedisCache", "LOCATION": REDIS_URL}
+    if REDIS_URL
+    else {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}
+}
+if env("DJANGO_ENV", default="development") == "production" and not REDIS_URL:
+    raise ImproperlyConfigured("REDIS_URL обязателен в продакшне (очередь оценки и общие лимиты запросов)")
 CELERY_TASK_ALWAYS_EAGER = not REDIS_URL
 CELERY_TASK_EAGER_PROPAGATES = False
 CELERY_TASK_ACKS_LATE = True
@@ -115,6 +136,8 @@ MAX_AUDIO_SECONDS = env.int("MAX_AUDIO_SECONDS", default=90)
 MAX_AUDIO_BYTES = MAX_AUDIO_SECONDS * 16_000 * 2 + 4096
 MAX_SEGMENT_WORDS = env.int("MAX_SEGMENT_WORDS", default=120)
 MAX_SEGMENTS_PER_DOCUMENT = env.int("MAX_SEGMENTS_PER_DOCUMENT", default=500)
+MAX_SEGMENT_CHARS = env.int("MAX_SEGMENT_CHARS", default=1500)
+MAX_DOCUMENTS_PER_USER = env.int("MAX_DOCUMENTS_PER_USER", default=300)
 DAILY_ATTEMPTS_PER_USER = env.int("DAILY_ATTEMPTS_PER_USER", default=200)
 DAILY_EXPLANATIONS_PER_USER = env.int("DAILY_EXPLANATIONS_PER_USER", default=100)
 DATA_UPLOAD_MAX_MEMORY_SIZE = MAX_UPLOAD_MB * 1024 * 1024
@@ -124,6 +147,9 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # В продакшне включить (обычно TLS терминирует прокси, тогда достаточно HSTS).
 SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=False)
 SECURE_HSTS_SECONDS = env.int("SECURE_HSTS_SECONDS", default=0)
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "no-referrer"
+X_FRAME_OPTIONS = "DENY"
 # API на JWT без cookie-сессий — CSRF не нужен; HTTP→HTTPS перенаправляет Caddy (deploy/Caddyfile).
 SILENCED_SYSTEM_CHECKS = ["security.W003", "security.W008"]
 

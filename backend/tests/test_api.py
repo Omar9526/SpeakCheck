@@ -37,7 +37,7 @@ def test_guest_auth_returns_tokens():
 
 def test_apple_auth_creates_user_and_links_guest(api, user, document):
     with mock.patch("services.apple.verify_identity_token", return_value={"sub": "apple-123"}):
-        r = api.post("/api/v1/auth/apple", {"identity_token": "x"}, format="json")
+        r = api.post("/api/v1/auth/apple", {"identity_token": "x", "nonce": "n"}, format="json")
     assert r.status_code == 200
     user.refresh_from_db()
     assert user.apple_sub == "apple-123" and user.is_guest is False  # гость стал Apple-аккаунтом, данные на месте
@@ -46,7 +46,7 @@ def test_apple_auth_creates_user_and_links_guest(api, user, document):
 def test_apple_auth_merges_guest_into_existing_account(api, user, document):
     existing = User.objects.create_user(apple_sub="apple-777")
     with mock.patch("services.apple.verify_identity_token", return_value={"sub": "apple-777"}):
-        r = api.post("/api/v1/auth/apple", {"identity_token": "x"}, format="json")
+        r = api.post("/api/v1/auth/apple", {"identity_token": "x", "nonce": "n"}, format="json")
     assert r.status_code == 200 and r.data["user"]["id"] == str(existing.id)
     assert existing.documents.count() == 1
     assert not User.objects.filter(id=user.id).exists()
@@ -58,7 +58,7 @@ def test_invalid_apple_token_uses_error_contract():
     from services.apple import AppleTokenError
 
     with mock.patch("services.apple.verify_identity_token", side_effect=AppleTokenError("bad")):
-        r = APIClient().post("/api/v1/auth/apple", {"identity_token": "x"}, format="json")
+        r = APIClient().post("/api/v1/auth/apple", {"identity_token": "x", "nonce": "n"}, format="json")
     assert r.status_code == 401
     assert set(r.data) == {"code", "message", "request_id"} and r.data["code"] == "invalid_apple_token"
 

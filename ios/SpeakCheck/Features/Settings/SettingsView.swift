@@ -44,7 +44,7 @@ struct SettingsView: View {
             Section {
                 Button("Удалить все мои данные", role: .destructive) { confirmErase = true }
                 Button("Выйти") {
-                    TokenStore.clear()
+                    Task { await APIClient.shared.logout() }
                     UserDefaults.standard.set(false, forKey: "sc.appleSignedIn")
                     store.hasCompletedOnboarding = false
                 }

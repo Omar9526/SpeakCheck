@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.errors import APIError
+from core.validation import parse_uuid
 
 from .models import Challenge, ReadingAttempt
 
@@ -34,8 +35,11 @@ class ChallengeCreateView(APIView):
     """POST /challenges {attempt_id} — вызов создаётся только из реальной завершённой попытки (без выдуманных баллов)."""
 
     def post(self, request):
+        attempt_id = parse_uuid(request.data.get("attempt_id"))
+        if attempt_id is None:
+            raise APIError("validation_error", "Некорректный attempt_id.", 400)
         attempt = ReadingAttempt.objects.filter(
-            id=request.data.get("attempt_id"), user=request.user, status=ReadingAttempt.Status.COMPLETED
+            id=attempt_id, user=request.user, status=ReadingAttempt.Status.COMPLETED
         ).select_related("assessment", "document").first()
         if attempt is None:
             raise APIError("not_found", "Попытка не найдена.", 404)
@@ -66,7 +70,7 @@ def challenge_landing(request, code):
         return HttpResponseNotFound("Вызов не найден")
     score = f"{round(challenge.owner_score)}%" if challenge.owner_score is not None else "—"
     preview = html.escape(challenge.reference_text[:220])
-    app_link = f"speakcheck://c/{code}"
+    app_link = html.escape(f"speakcheck://c/{challenge.code}")
     store = html.escape(settings.APP_STORE_URL)
     page = f"""<!doctype html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">

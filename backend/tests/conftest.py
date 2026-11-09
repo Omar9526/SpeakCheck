@@ -10,6 +10,15 @@ from apps.accounts.models import User
 
 
 @pytest.fixture(autouse=True)
+def _clear_throttle_cache():
+    from django.core.cache import cache
+
+    cache.clear()
+    yield
+    cache.clear()
+
+
+@pytest.fixture(autouse=True)
 def _private_storage(settings, tmp_path):
     settings.PRIVATE_STORAGE_ROOT = tmp_path / "private"
     settings.AZURE_SPEECH_KEY = ""

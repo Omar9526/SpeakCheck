@@ -2,7 +2,12 @@ from rest_framework import serializers
 
 from .models import User
 
-ALLOWED_PREFERENCE_KEYS = {"explanation_language", "keep_audio", "voice_consent"}
+# Каждая настройка — строго своего типа и из допустимых значений.
+PREFERENCE_VALIDATORS = {
+    "explanation_language": lambda v: v in ("ru", "en"),
+    "keep_audio": lambda v: isinstance(v, bool),
+    "voice_consent": lambda v: isinstance(v, bool),
+}
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -12,8 +17,10 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "is_guest", "created_at"]
 
     def validate_preferences(self, value):
-        if not isinstance(value, dict) or set(value) - ALLOWED_PREFERENCE_KEYS:
+        if not isinstance(value, dict) or set(value) - set(PREFERENCE_VALIDATORS):
             raise serializers.ValidationError("Недопустимые настройки.")
+        if not all(PREFERENCE_VALIDATORS[k](v) for k, v in value.items()):
+            raise serializers.ValidationError("Недопустимое значение настройки.")
         return value
 
     def validate_locale(self, value):
@@ -24,6 +31,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 class AppleAuthSerializer(serializers.Serializer):
     identity_token = serializers.CharField(max_length=4096)
-    locale = serializers.CharField(max_length=16, required=False)
+    # Исходный nonce: Apple кладёт в токен его SHA-256 — перехваченный токен нельзя использовать повторно.
+    nonce = serializers.CharField(max_length=128)
+    locale = serializers.ChoiceField(choices=["ru", "en", "ky"], required=False)
     # Гостевой аккаунт, данные которого нужно перенести в Apple-аккаунт.
     link_guest = serializers.BooleanField(default=True)

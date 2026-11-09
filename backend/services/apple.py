@@ -1,4 +1,7 @@
-"""Проверка Apple identity token на сервере (подпись, issuer, audience, срок)."""
+"""Проверка Apple identity token на сервере (подпись, issuer, audience, срок, nonce)."""
+import hashlib
+import hmac
+
 import jwt
 from django.conf import settings
 
@@ -19,17 +22,27 @@ def _client():
     return _jwks_client
 
 
-def verify_identity_token(token: str) -> dict:
-    """Возвращает claims (sub, email?) или бросает AppleTokenError."""
+def verify_identity_token(token: str, raw_nonce: str) -> dict:
+    """Возвращает claims (sub, email?) или бросает AppleTokenError.
+
+    Приложение передаёт Apple SHA-256 от случайного nonce, а серверу — сам nonce.
+    Токен без совпадающего nonce (перехваченный или от другого запроса) не принимается.
+    """
+    if not raw_nonce:
+        raise AppleTokenError("missing_nonce")
     try:
         signing_key = _client().get_signing_key_from_jwt(token)
-        return jwt.decode(
+        claims = jwt.decode(
             token,
             signing_key.key,
             algorithms=["RS256"],
             audience=settings.APPLE_BUNDLE_ID,
             issuer=APPLE_ISSUER,
-            options={"require": ["sub", "exp", "iat"]},
+            options={"require": ["sub", "exp", "iat", "nonce"]},
         )
     except (jwt.PyJWTError, jwt.PyJWKClientError) as exc:
         raise AppleTokenError(type(exc).__name__) from exc
+    expected = hashlib.sha256(raw_nonce.encode()).hexdigest()
+    if not hmac.compare_digest(str(claims.get("nonce", "")), expected):
+        raise AppleTokenError("nonce_mismatch")
+    return claims

@@ -3,6 +3,8 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from core.errors import APIError
@@ -17,15 +19,29 @@ def tokens_for(user):
     return {"access": str(refresh.access_token), "refresh": str(refresh), "user": UserSerializer(user).data}
 
 
+class GuestRateThrottle(AnonRateThrottle):
+    """Создание гостей ограничено по IP: иначе можно наплодить аккаунты и обойти дневные лимиты."""
+
+    scope = "guest"
+
+
+def revoke_all_tokens(user) -> None:
+    for token in OutstandingToken.objects.filter(user=user):
+        BlacklistedToken.objects.get_or_create(token=token)
+
+
 class GuestAuthView(APIView):
     """POST /auth/guest — анонимный аккаунт устройства (гостевой режим, ТЗ 2)."""
 
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
-    throttle_classes = [AnonRateThrottle]
+    throttle_classes = [GuestRateThrottle]
 
     def post(self, request):
-        user = User.objects.create_user(is_guest=True, locale=request.data.get("locale", "ru")[:16])
+        locale = request.data.get("locale") if isinstance(request.data, dict) else None
+        if locale not in ("ru", "en", "ky"):
+            locale = "ru"
+        user = User.objects.create_user(is_guest=True, locale=locale)
         return Response(tokens_for(user), status=status.HTTP_201_CREATED)
 
 
@@ -43,7 +59,7 @@ class AppleAuthView(APIView):
         data = AppleAuthSerializer(data=request.data)
         data.is_valid(raise_exception=True)
         try:
-            claims = apple.verify_identity_token(data.validated_data["identity_token"])
+            claims = apple.verify_identity_token(data.validated_data["identity_token"], data.validated_data["nonce"])
         except apple.AppleTokenError:
             raise APIError("invalid_apple_token", "Не удалось подтвердить вход через Apple.", 401)
 
@@ -68,6 +84,21 @@ class AppleAuthView(APIView):
         return Response(tokens_for(user))
 
 
+class LogoutView(APIView):
+    """POST /auth/logout {refresh} — отзывает refresh-токен этого устройства."""
+
+    def post(self, request):
+        raw = request.data.get("refresh")
+        if isinstance(raw, str):
+            try:
+                token = RefreshToken(raw)
+                if str(token.get("user_id")) == str(request.user.id):
+                    token.blacklist()
+            except TokenError:
+                pass  # уже недействителен — выход всё равно успешен
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class MeView(APIView):
     """GET/PATCH/DELETE /me — профиль, настройки, удаление аккаунта со всеми данными."""
 
@@ -84,5 +115,6 @@ class MeView(APIView):
         from apps.reading.services import delete_user_data
 
         delete_user_data(request.user)
+        revoke_all_tokens(request.user)
         request.user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -17,6 +17,8 @@ class SegmentSerializer(serializers.ModelSerializer):
         text = value.strip()
         if not text:
             raise serializers.ValidationError("Пустой фрагмент.")
+        if len(text) > settings.MAX_SEGMENT_CHARS:
+            raise serializers.ValidationError(f"Фрагмент длиннее {settings.MAX_SEGMENT_CHARS} символов.")
         if len(text.split()) > settings.MAX_SEGMENT_WORDS:
             raise serializers.ValidationError(f"Фрагмент длиннее {settings.MAX_SEGMENT_WORDS} слов — разделите его.")
         return text

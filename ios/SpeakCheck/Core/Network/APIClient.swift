@@ -24,6 +24,10 @@ actor APIClient {
     static let baseURL: URL? = {
         guard let raw = Bundle.main.object(forInfoDictionaryKey: "SCAPIBaseURL") as? String,
               !raw.isEmpty, let url = URL(string: raw) else { return nil }
+        #if !DEBUG
+        // В релизе — только HTTPS: токены и записи голоса не должны идти открытым текстом.
+        guard url.scheme == "https" else { return nil }
+        #endif
         return url
     }()
 
@@ -97,13 +101,23 @@ actor APIClient {
         TokenStore.save(access: tokens.access, refresh: tokens.refresh)
     }
 
-    func signInWithApple(identityToken: String) async throws {
-        struct Body: Encodable, Sendable { let identityToken: String; let linkGuest: Bool }
+    func signInWithApple(identityToken: String, nonce: String) async throws {
+        struct Body: Encodable, Sendable { let identityToken: String; let nonce: String; let linkGuest: Bool }
         // Если есть гостевой токен — сервер перенесёт данные гостя в Apple-аккаунт.
         let tokens: AuthResponse = try await send("auth/apple", method: "POST",
-                                                  body: try encoder.encode(Body(identityToken: identityToken, linkGuest: true)),
+                                                  body: try encoder.encode(Body(identityToken: identityToken, nonce: nonce, linkGuest: true)),
                                                   contentType: "application/json", authorized: TokenStore.accessToken != nil)
         TokenStore.save(access: tokens.access, refresh: tokens.refresh)
+    }
+
+    /// Выход: сервер отзывает refresh-токен, затем токены стираются с устройства.
+    func logout() async {
+        if let refresh = TokenStore.refreshToken, TokenStore.accessToken != nil {
+            let _: EmptyResponse? = try? await send("auth/logout", method: "POST",
+                                                    body: try? encoder.encode(["refresh": refresh]),
+                                                    contentType: "application/json")
+        }
+        TokenStore.clear()
     }
 
     // MARK: Core

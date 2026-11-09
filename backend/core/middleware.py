@@ -30,3 +30,25 @@ class RequestIDLogFilter(logging.Filter):
     def filter(self, record):
         record.request_id = request_id_var.get()
         return True
+
+
+# HTML-страницы (вызов, политика) не исполняют скриптов: всё содержимое статично.
+HTML_CSP = ("default-src 'none'; style-src 'unsafe-inline'; img-src data:; "
+            "base-uri 'none'; form-action 'none'; frame-ancestors 'none'")
+
+
+class SecurityHeadersMiddleware:
+    """Заголовки защиты от XSS/кликджекинга/подмены типа для всех ответов."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        if response.get("Content-Type", "").startswith("text/html"):
+            response.setdefault("Content-Security-Policy", HTML_CSP)
+        else:
+            response.setdefault("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'")
+        response.setdefault("Cross-Origin-Resource-Policy", "same-origin")
+        response.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+        return response

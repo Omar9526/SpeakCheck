@@ -22,6 +22,7 @@
 		293092EC3F8D7FFF5955CB73 /* ImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DFF44F90136037896AEF28 /* ImportView.swift */; };
 		3C1CDFB3390B1C4793CEE29F /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01347A85A0F4A2EAF60C2858 /* ResultView.swift */; };
 		400064E33883C2555AEECB56 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F3B7F4E95BF5A0FDE986049A /* PrivacyInfo.xcprivacy */; };
+		424EEC6484FD3EACEF837C01 /* AppleNonce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C1ED1FC99EBD9B7A3E71EA /* AppleNonce.swift */; };
 		43506317100ACD148F09C59A /* EngagementViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605715E9CAFB7C1BC4AF8CFE /* EngagementViews.swift */; };
 		48CE25CC84D98ECCBFEBAFB2 /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DE5C2C8F30F5B2AB110CCF /* DeepLink.swift */; };
 		4C904DC84FEB110C1FEFFB5E /* TextReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92AA1763F1C86D144261114C /* TextReviewView.swift */; };
@@ -100,6 +101,7 @@
 		8BA8908C3C38D40AA5AEEBD6 /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
 		92AA1763F1C86D144261114C /* TextReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextReviewView.swift; sourceTree = "<group>"; };
 		9495BFE2B455DA28B484C0D4 /* AssessmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssessmentService.swift; sourceTree = "<group>"; };
+		98C1ED1FC99EBD9B7A3E71EA /* AppleNonce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleNonce.swift; sourceTree = "<group>"; };
 		9AA242C3CB37AE01C851DD7E /* SpeakCheck.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SpeakCheck.entitlements; sourceTree = "<group>"; };
 		A54B62C636732F773B16B108 /* AssessmentAggregator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssessmentAggregator.swift; sourceTree = "<group>"; };
 		A6A97923D625C3FC509B372D /* SpeakCheckTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SpeakCheckTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -313,6 +315,7 @@
 			isa = PBXGroup;
 			children = (
 				BA6621F2AD782F5DA24EDE2D /* APIClient.swift */,
+				98C1ED1FC99EBD9B7A3E71EA /* AppleNonce.swift */,
 				C21E60806D6756A4B76B5F3C /* TokenStore.swift */,
 			);
 			path = Network;
@@ -521,6 +524,7 @@
 				B3247C048F2325864A1996EB /* APIClient.swift in Sources */,
 				D2C8ADCA88FFA7E5DE951FD4 /* AdaptiveStack.swift in Sources */,
 				A188017FBAAF30AFC1F22D4B /* AppStore.swift in Sources */,
+				424EEC6484FD3EACEF837C01 /* AppleNonce.swift in Sources */,
 				0C1B3B1C3C502D55E496691B /* AssessmentAggregator.swift in Sources */,
 				1AB7096CFA3C4216FE339F1D /* AssessmentService.swift in Sources */,
 				0474AE0ABCD4EE3F7AF148BB /* AudioRecorder.swift in Sources */,

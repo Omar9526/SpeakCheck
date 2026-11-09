@@ -4,6 +4,7 @@ import SwiftUI
 struct OnboardingView: View {
     @Environment(AppStore.self) private var store
     @State var appleError = false
+    @State private var appleNonce = ""
 
     private let benefits: [(icon: String, title: String, text: String)] = [
         ("doc.text.fill", "Свой текст", "PDF, Word, TXT или фото страницы"),
@@ -45,6 +46,8 @@ struct OnboardingView: View {
                 VStack(spacing: Theme.Spacing.m) {
                     SignInWithAppleButton(.signIn) { request in
                         request.requestedScopes = []
+                        appleNonce = AppleNonce.make()
+                        request.nonce = AppleNonce.sha256(appleNonce)
                     } onCompletion: { result in
                         handleApple(result)
                     }
@@ -84,13 +87,15 @@ extension OnboardingView {
         guard case .success(let auth) = result,
               let credential = auth.credential as? ASAuthorizationAppleIDCredential,
               let tokenData = credential.identityToken,
-              let token = String(data: tokenData, encoding: .utf8) else {
+              let token = String(data: tokenData, encoding: .utf8), !appleNonce.isEmpty else {
             appleError = true
             return
         }
+        let nonce = appleNonce
+        appleNonce = ""
         Task {
             do {
-                try await APIClient.shared.signInWithApple(identityToken: token)
+                try await APIClient.shared.signInWithApple(identityToken: token, nonce: nonce)
                 UserDefaults.standard.set(true, forKey: "sc.appleSignedIn")
                 store.hasCompletedOnboarding = true
             } catch {
