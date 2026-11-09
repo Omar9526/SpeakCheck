@@ -58,7 +58,7 @@ struct OnboardingView: View {
                     }
                     .buttonStyle(.secondary)
 
-                    Text("Без входа данные хранятся только на этом iPhone. Оценка не является сертифицированным тестом CEFR.")
+                    Text("Без входа история привязана к этому iPhone. Оценка не является сертифицированным тестом CEFR.")
                         .font(.footnote)
                         .foregroundStyle(Theme.Colors.textTertiary)
                         .multilineTextAlignment(.center)

@@ -38,25 +38,16 @@ struct WordDetailView: View {
                             .font(.largeTitle.weight(.bold))
                             .foregroundStyle(Theme.Colors.textPrimary)
                     }
-                    HStack {
-                        Text("Ваше произношение:")
-                            .foregroundStyle(Theme.Colors.textSecondary)
-                        if let score = word.score {
-                            Text("\(Int(score.rounded()))%")
-                                .fontWeight(.bold)
-                                .foregroundStyle(ScoreBand(score: score).color)
-                        } else {
-                            Text(word.isOmitted ? "пропущено" : "Недоступно")
-                                .fontWeight(.semibold)
-                                .foregroundStyle(word.isOmitted ? Theme.Colors.danger : Theme.Colors.textTertiary)
-                        }
+                    ViewThatFits(in: .horizontal) {
+                        HStack { scoreLine(word) }
+                        VStack(alignment: .leading, spacing: 4) { scoreLine(word) }
                     }
                     .font(.headline)
                     if let error = word.errorType, error != .none {
                         Chip(text: error.title, tint: Theme.Colors.warning)
                     }
 
-                    HStack(spacing: Theme.Spacing.m) {
+                    AdaptiveStack(spacing: Theme.Spacing.m) {
                         Button {
                             speech.speak(clean)
                         } label: {
@@ -127,6 +118,21 @@ struct WordDetailView: View {
         )
         store.add(doc)
         router.push(.reader(documentID: doc.id, segmentIndex: 0))
+    }
+
+    @ViewBuilder
+    private func scoreLine(_ word: WordAssessment) -> some View {
+        Text("Ваше произношение:")
+            .foregroundStyle(Theme.Colors.textSecondary)
+        if let score = word.score {
+            Text("\(Int(score.rounded()))%")
+                .fontWeight(.bold)
+                .foregroundStyle(ScoreBand(score: score).color)
+        } else {
+            Text(word.isOmitted ? "пропущено" : "Недоступно")
+                .fontWeight(.semibold)
+                .foregroundStyle(word.isOmitted ? Theme.Colors.danger : Theme.Colors.textTertiary)
+        }
     }
 }
 

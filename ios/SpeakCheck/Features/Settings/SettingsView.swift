@@ -16,7 +16,7 @@ struct SettingsView: View {
                         Text(UserDefaults.standard.bool(forKey: "sc.appleSignedIn") ? "Вход через Apple" : "Гостевой режим")
                             .font(.headline)
                             .foregroundStyle(Theme.Colors.textPrimary)
-                        Text(UserDefaults.standard.bool(forKey: "sc.appleSignedIn") ? "История сохраняется в аккаунте" : "Данные хранятся только на этом iPhone")
+                        Text(UserDefaults.standard.bool(forKey: "sc.appleSignedIn") ? "История сохраняется в аккаунте" : "История привязана к этому iPhone — войдите, чтобы не потерять её")
                             .font(.caption)
                             .foregroundStyle(Theme.Colors.textSecondary)
                     }

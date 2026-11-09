@@ -40,6 +40,7 @@
 		B6FCCCF9EAFF97B0B752C0A3 /* SpeakCheckApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044F40BF3C4F64F797447E11 /* SpeakCheckApp.swift */; };
 		C487888CA4E10B7A4C115F01 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C13985E41752FB44E9AAF5A /* SettingsView.swift */; };
 		C8FF200C8CAE8E48D2263353 /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6525EBEC4E4907399FEDF9C4 /* WaveformView.swift */; };
+		D2C8ADCA88FFA7E5DE951FD4 /* AdaptiveStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F7734F5642A8BEA72CB9294 /* AdaptiveStack.swift */; };
 		D86800DD3BDB78413D2D659D /* ProcessingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB0523E0957FA4DFD3E3CBE /* ProcessingView.swift */; };
 		DC55B325FA09813569E4A23E /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7E3BD9A916A43E3A3B2D441 /* HistoryView.swift */; };
 		DF155FF932F9A8B16B727878 /* ImportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68903FB82B2298A909361C27 /* ImportViewModel.swift */; };
@@ -67,6 +68,7 @@
 /* Begin PBXFileReference section */
 		01347A85A0F4A2EAF60C2858 /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
 		044F40BF3C4F64F797447E11 /* SpeakCheckApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakCheckApp.swift; sourceTree = "<group>"; };
+		0F7734F5642A8BEA72CB9294 /* AdaptiveStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveStack.swift; sourceTree = "<group>"; };
 		14DFF44F90136037896AEF28 /* ImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportView.swift; sourceTree = "<group>"; };
 		1A4BD8235D77F911A6608175 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
 		1C13985E41752FB44E9AAF5A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 		85733F99434C0FAF3F4C34FB /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				0F7734F5642A8BEA72CB9294 /* AdaptiveStack.swift */,
 				8727570FD8C4E38F6992072E /* Buttons.swift */,
 				A85410364B5B5FAFB0A215C7 /* Cards.swift */,
 				1A4BD8235D77F911A6608175 /* FlowLayout.swift */,
@@ -510,6 +513,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3247C048F2325864A1996EB /* APIClient.swift in Sources */,
+				D2C8ADCA88FFA7E5DE951FD4 /* AdaptiveStack.swift in Sources */,
 				A188017FBAAF30AFC1F22D4B /* AppStore.swift in Sources */,
 				0C1B3B1C3C502D55E496691B /* AssessmentAggregator.swift in Sources */,
 				1AB7096CFA3C4216FE339F1D /* AssessmentService.swift in Sources */,

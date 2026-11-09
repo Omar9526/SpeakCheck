@@ -39,7 +39,7 @@ struct HistoryView: View {
             Text("Последние 10 попыток")
                 .font(.subheadline)
                 .foregroundStyle(Theme.Colors.textSecondary)
-            HStack(spacing: Theme.Spacing.l) {
+            AdaptiveStack(spacing: Theme.Spacing.l) {
                 if let overall = summary.overall {
                     ScoreRing(score: overall, lineWidth: 10)
                         .frame(width: 110, height: 110)
@@ -50,7 +50,7 @@ struct HistoryView: View {
                     MetricBar(title: "Полнота", value: summary.completeness, tint: Theme.Colors.accentLight)
                 }
             }
-            HStack {
+            AdaptiveStack(spacing: Theme.Spacing.s) {
                 stat("\(store.completedAttempts.count)", "попыток")
                 stat("\(summary.wordCount)", "слов оценено")
                 stat("\(store.documents.count)", "документов")

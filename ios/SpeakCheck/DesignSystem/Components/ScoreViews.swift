@@ -35,6 +35,8 @@ struct ScoreRing: View {
                     Text(band.verdict)
                         .font(.footnote)
                         .foregroundStyle(Theme.Colors.textSecondary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
                 }
             }
             .padding(lineWidth)

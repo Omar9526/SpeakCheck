@@ -11,6 +11,9 @@ struct ReaderView: View {
     @State private var speech = SpeechPlayer()
     @State private var alert: ReaderAlert?
     @State private var textSize: CGFloat = 20
+    /// Масштаб системного размера текста (Dynamic Type): 100 при стандартном.
+    @ScaledMetric(relativeTo: .title3) private var typeScale: CGFloat = 100
+    private var readingSize: CGFloat { textSize * min(typeScale / 100, 2.2) }
 
     init(documentID: UUID, segmentIndex: Int) {
         self.documentID = documentID
@@ -73,8 +76,8 @@ struct ReaderView: View {
 
             ScrollView {
                 Text(segment.referenceText)
-                    .font(.system(size: textSize, weight: .regular))
-                    .lineSpacing(textSize * 0.35)
+                    .font(.system(size: readingSize, weight: .regular))
+                    .lineSpacing(readingSize * 0.35)
                     .foregroundStyle(Theme.Colors.textPrimary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .textSelection(.enabled)

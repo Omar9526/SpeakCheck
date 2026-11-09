@@ -91,7 +91,7 @@ struct ResultView: View {
             Text(score >= ScoreThresholds.default.good ? "Отличный результат — похвастайтесь!" : "Позовите друга попробовать")
                 .font(.headline)
                 .foregroundStyle(Theme.Colors.textPrimary)
-            HStack(spacing: Theme.Spacing.m) {
+            AdaptiveStack(spacing: Theme.Spacing.m) {
                 Button {
                     shareStory(assessment: assessment, doc: doc, text: text)
                 } label: {
@@ -152,7 +152,7 @@ struct ResultView: View {
                 Spacer()
                 Chip(text: "Анализ завершён", tint: Theme.Colors.success)
             }
-            HStack(alignment: .center, spacing: Theme.Spacing.l) {
+            AdaptiveStack(spacing: Theme.Spacing.l) {
                 if let overall = a.overall {
                     ScoreRing(score: overall)
                         .frame(width: 128, height: 128)
@@ -256,12 +256,16 @@ struct ResultView: View {
 struct WordChip: View {
     var word: WordAssessment
     var action: () -> Void
+    /// «Без цвета» в настройках доступности: статус дублируется подчёркиванием.
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var withoutColor
 
     var body: some View {
         Button(action: action) {
             Text(word.word)
                 .font(.body)
                 .strikethrough(word.isOmitted, color: Theme.Colors.danger)
+                .underline(withoutColor && !word.isOmitted && (band == .fair || band == .poor),
+                           pattern: band == .fair ? .dash : .solid)
                 .foregroundStyle(foreground)
                 .padding(.horizontal, 5)
                 .padding(.vertical, 3)
