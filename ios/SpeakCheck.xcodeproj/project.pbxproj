@@ -751,7 +751,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = kg.speakcheck.app;
 				PRODUCT_NAME = SpeakCheck;
-				SC_API_BASE_URL = "";
+				SC_API_BASE_URL = "https://213-109-67-14.sslip.io";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -783,7 +783,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = kg.speakcheck.app;
 				PRODUCT_NAME = SpeakCheck;
-				SC_API_BASE_URL = "http://localhost:8000";
+				SC_API_BASE_URL = "https://213-109-67-14.sslip.io";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

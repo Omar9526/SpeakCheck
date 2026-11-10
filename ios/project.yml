@@ -42,9 +42,9 @@ targets:
         ENABLE_PREVIEWS: YES
       configs:
         Debug:
-          SC_API_BASE_URL: "http://localhost:8000"
+          SC_API_BASE_URL: "https://213-109-67-14.sslip.io"
         Release:
-          SC_API_BASE_URL: ""
+          SC_API_BASE_URL: "https://213-109-67-14.sslip.io"
   SpeakCheckTests:
     type: bundle.unit-test
     platform: iOS

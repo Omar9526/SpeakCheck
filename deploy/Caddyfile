@@ -4,6 +4,7 @@
 	request_body {
 		max_size 30MB
 	}
-	header Strict-Transport-Security "max-age=31536000"
+	# «?» — только если Django не поставил свой (иначе заголовок дублируется)
+	header ?Strict-Transport-Security "max-age=31536000"
 	reverse_proxy web:8000
 }
