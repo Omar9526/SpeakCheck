@@ -74,6 +74,7 @@ REST_FRAMEWORK = {
         "guest": env("THROTTLE_GUEST", default="10/hour"),
         "attempts": env("THROTTLE_ATTEMPTS", default="20/min"),
         "explanations": env("THROTTLE_EXPLANATIONS", default="20/min"),
+        "speech": env("THROTTLE_SPEECH", default="60/min"),
     },
     "UNAUTHENTICATED_USER": None,
 }
@@ -123,6 +124,9 @@ SUPPORT_EMAIL = env("SUPPORT_EMAIL", default="")
 AZURE_SPEECH_KEY = env("AZURE_SPEECH_KEY", default="")
 AZURE_SPEECH_REGION = env("AZURE_SPEECH_REGION", default="")
 AZURE_LOCALE = env("AZURE_LOCALE", default="en-US")
+# Голос для «Послушать». Самые естественные — HD (например "en-US-Ava:DragonHDLatestNeural"),
+# но они есть не во всех регионах; по умолчанию — нейросетевой голос, доступный везде.
+AZURE_TTS_VOICE = env("AZURE_TTS_VOICE", default="en-US-AvaMultilingualNeural")
 
 # DeepSeek
 DEEPSEEK_API_KEY = env("DEEPSEEK_API_KEY", default="")

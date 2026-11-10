@@ -12,8 +12,10 @@
 ## Первый запуск
 
 ```bash
+# с Mac: ключ на сервер, затем настройка (Docker, фаервол 22/80/443, вход только по ключу, fail2ban)
+ssh-copy-id <user>@<IP>
+scp deploy/server-setup.sh <user>@<IP>:~ && ssh -t <user>@<IP> 'sudo bash ~/server-setup.sh <user> && passwd'
 # на сервере
-curl -fsSL https://get.docker.com | sh
 git clone git@github.com:Omar9526/SpeakCheck.git && cd SpeakCheck/deploy
 cp .env.example .env
 nano .env        # DOMAIN, DJANGO_SECRET_KEY и POSTGRES_PASSWORD (openssl rand -hex 32), ключи

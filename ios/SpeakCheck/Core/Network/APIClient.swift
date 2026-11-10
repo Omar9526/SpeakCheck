@@ -122,9 +122,23 @@ actor APIClient {
 
     // MARK: Core
 
+    /// POST JSON → сырые байты ответа (например, MP3 озвучки).
+    func postForData<B: Encodable & Sendable>(_ path: String, json body: B) async throws -> Data {
+        try await sendRaw(path, method: "POST", body: try encoder.encode(body), contentType: "application/json")
+    }
+
     private func send<T: Decodable & Sendable>(_ path: String, method: String, body: Data?, contentType: String?,
                                                extraHeaders: [String: String] = [:], authorized: Bool = true,
                                                retryOnAuth: Bool = true) async throws -> T {
+        let data = try await sendRaw(path, method: method, body: body, contentType: contentType,
+                                     extraHeaders: extraHeaders, authorized: authorized, retryOnAuth: retryOnAuth)
+        if T.self == EmptyResponse.self || data.isEmpty { return EmptyResponse() as! T }
+        return try decoder.decode(T.self, from: data)
+    }
+
+    private func sendRaw(_ path: String, method: String, body: Data?, contentType: String?,
+                         extraHeaders: [String: String] = [:], authorized: Bool = true,
+                         retryOnAuth: Bool = true) async throws -> Data {
         guard let base = Self.baseURL else { throw ClientError.notConfigured }
         if authorized { try await authenticateAsGuestIfNeeded() }
 
@@ -142,8 +156,8 @@ actor APIClient {
 
         if http.statusCode == 401, authorized, retryOnAuth {
             try await refreshTokens()
-            return try await send(path, method: method, body: body, contentType: contentType,
-                                  extraHeaders: extraHeaders, authorized: authorized, retryOnAuth: false)
+            return try await sendRaw(path, method: method, body: body, contentType: contentType,
+                                     extraHeaders: extraHeaders, authorized: authorized, retryOnAuth: false)
         }
         guard (200..<300).contains(http.statusCode) else {
             if let error = try? decoder.decode(ServerError.self, from: data) {
@@ -151,8 +165,7 @@ actor APIClient {
             }
             throw ClientError.invalidResponse
         }
-        if T.self == EmptyResponse.self || data.isEmpty { return EmptyResponse() as! T }
-        return try decoder.decode(T.self, from: data)
+        return data
     }
 
     private func refreshTokens() async throws {
