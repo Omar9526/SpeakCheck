@@ -3,14 +3,15 @@ import SwiftUI
 
 struct OnboardingView: View {
     @Environment(AppStore.self) private var store
-    @State var appleError = false
+    @State var signInError = false
+    @State private var googleInProgress = false
     @State private var appleNonce = ""
 
     private let benefits: [(icon: String, title: String, text: String)] = [
-        ("graduationcap.fill", "IELTS Speaking и собеседования", "Готовые ответы или свой текст из PDF, Word, фото"),
+        ("doc.text.fill", "Любой английский текст", "Свой из PDF, Word, фото — или готовые ответы"),
         ("waveform", "Читаете вслух", "Оценка 0–100 по каждому слову и звуку"),
         ("text.bubble.fill", "Разбор на русском", "Почему звук не так и как сказать правильно"),
-        ("calendar", "План до даты", "Обратный отсчёт до экзамена и задание на день")
+        ("target", "Под вашу цель", "Экзамен IELTS, собеседование или просто увереннее говорить")
     ]
 
     var body: some View {
@@ -20,10 +21,10 @@ struct OnboardingView: View {
                     .padding(.top, Theme.Spacing.xl)
 
                 VStack(alignment: .leading, spacing: Theme.Spacing.m) {
-                    Text("Подготовьтесь к IELTS Speaking и собеседованию")
+                    Text("Говорите по-английски чисто и уверенно")
                         .font(.largeTitle.weight(.bold))
                         .foregroundStyle(Theme.Colors.textPrimary)
-                    Text("Прочитайте свой ответ вслух и узнайте, какие звуки вас выдают — с объяснением на русском.")
+                    Text("Читайте вслух любой английский текст и узнайте, какие звуки вас выдают — с объяснением на русском.")
                         .font(.body)
                         .foregroundStyle(Theme.Colors.textSecondary)
                 }
@@ -55,6 +56,26 @@ struct OnboardingView: View {
                     .frame(height: 54)
                     .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.medium, style: .continuous))
 
+                    if GoogleAuth.isConfigured {
+                        Button(action: signInWithGoogle) {
+                            HStack(spacing: 10) {
+                                if googleInProgress {
+                                    ProgressView().tint(.black)
+                                } else {
+                                    Image("GoogleLogo").resizable().frame(width: 18, height: 18)
+                                }
+                                Text("Вход с Google")
+                                    .font(.system(size: 19, weight: .medium))
+                            }
+                            .foregroundStyle(.black)
+                            .frame(maxWidth: .infinity, minHeight: 54)
+                            .background(.white, in: RoundedRectangle(cornerRadius: Theme.Radius.medium, style: .continuous))
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(googleInProgress)
+                        .accessibilityLabel("Вход с Google")
+                    }
+
                     Button("Попробовать без входа") {
                         store.hasCompletedOnboarding = true
                         // Гостевой аккаунт на сервере создаётся лениво при первой оценке.
@@ -72,7 +93,7 @@ struct OnboardingView: View {
             .padding(.bottom, Theme.Spacing.xl)
         }
         .scrollBounceBehavior(.basedOnSize)
-        .alert("Не удалось войти через Apple", isPresented: $appleError) {
+        .alert("Не удалось войти", isPresented: $signInError) {
             Button("Продолжить без входа") { store.hasCompletedOnboarding = true }
             Button("Отмена", role: .cancel) {}
         } message: {
@@ -88,7 +109,7 @@ extension OnboardingView {
               let credential = auth.credential as? ASAuthorizationAppleIDCredential,
               let tokenData = credential.identityToken,
               let token = String(data: tokenData, encoding: .utf8), !appleNonce.isEmpty else {
-            appleError = true
+            signInError = true
             return
         }
         let nonce = appleNonce
@@ -96,10 +117,26 @@ extension OnboardingView {
         Task {
             do {
                 try await APIClient.shared.signInWithApple(identityToken: token, nonce: nonce)
-                UserDefaults.standard.set(true, forKey: "sc.appleSignedIn")
+                SignInProvider.current = .apple
                 store.hasCompletedOnboarding = true
             } catch {
-                appleError = true
+                signInError = true
+            }
+        }
+    }
+
+    func signInWithGoogle() {
+        googleInProgress = true
+        Task {
+            defer { googleInProgress = false }
+            do {
+                try await GoogleAuth.signIn()
+                SignInProvider.current = .google
+                store.hasCompletedOnboarding = true
+            } catch where GoogleAuth.isCancellation(error) {
+                // Пользователь закрыл окно Google — остаёмся на экране без ошибки.
+            } catch {
+                signInError = true
             }
         }
     }

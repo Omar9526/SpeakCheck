@@ -46,3 +46,11 @@ class AppleAuthSerializer(serializers.Serializer):
     locale = serializers.ChoiceField(choices=["ru", "en", "ky"], required=False)
     # Гостевой аккаунт, данные которого нужно перенести в Apple-аккаунт.
     link_guest = serializers.BooleanField(default=True)
+
+
+class GoogleAuthSerializer(serializers.Serializer):
+    id_token = serializers.CharField(max_length=4096)
+    # Исходный nonce: в токен Google кладётся его SHA-256 — перехваченный токен нельзя использовать повторно.
+    nonce = serializers.CharField(max_length=128)
+    locale = serializers.ChoiceField(choices=["ru", "en", "ky"], required=False)
+    link_guest = serializers.BooleanField(default=True)

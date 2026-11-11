@@ -118,6 +118,9 @@ APP_STORE_URL = env("APP_STORE_URL", default="https://apps.apple.com/")
 # Apple
 APPLE_BUNDLE_ID = env("APPLE_BUNDLE_ID", default="kg.speakcheck.app")
 APPLE_TEAM_ID = env("APPLE_TEAM_ID", default="")
+
+# Google: OAuth Client ID приложения (iOS) из Google Cloud Console; можно несколько через запятую.
+GOOGLE_CLIENT_IDS = tuple(x.strip() for x in env("GOOGLE_CLIENT_IDS", default="").split(",") if x.strip())
 SUPPORT_EMAIL = env("SUPPORT_EMAIL", default="")
 
 # Azure Speech

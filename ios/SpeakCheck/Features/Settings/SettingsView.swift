@@ -16,10 +16,10 @@ struct SettingsView: View {
                 HStack(spacing: Theme.Spacing.m) {
                     IconTile(systemName: "person.fill", size: 48)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(UserDefaults.standard.bool(forKey: "sc.appleSignedIn") ? "Вход через Apple" : "Гостевой режим")
+                        Text(SignInProvider.current?.title ?? "Гостевой режим")
                             .font(.headline)
                             .foregroundStyle(Theme.Colors.textPrimary)
-                        Text(UserDefaults.standard.bool(forKey: "sc.appleSignedIn") ? "История сохраняется в аккаунте" : "История привязана к этому iPhone — войдите, чтобы не потерять её")
+                        Text(SignInProvider.current != nil ? "История сохраняется в аккаунте" : "История привязана к этому iPhone — войдите, чтобы не потерять её")
                             .font(.caption)
                             .foregroundStyle(Theme.Colors.textSecondary)
                     }
@@ -58,7 +58,8 @@ struct SettingsView: View {
                 Button("Удалить все мои данные", role: .destructive) { confirmErase = true }
                 Button("Выйти") {
                     Task { await APIClient.shared.logout() }
-                    UserDefaults.standard.set(false, forKey: "sc.appleSignedIn")
+                    if SignInProvider.current == .google { GoogleAuth.signOut() }
+                    SignInProvider.current = nil
                     store.hasCompletedOnboarding = false
                 }
                     .foregroundStyle(Theme.Colors.textPrimary)
@@ -76,6 +77,8 @@ struct SettingsView: View {
         .confirmationDialog("Удалить все документы, попытки и записи?", isPresented: $confirmErase, titleVisibility: .visible) {
             Button("Удалить всё", role: .destructive) {
                 store.eraseAll()
+                if SignInProvider.current == .google { GoogleAuth.signOut() }
+                SignInProvider.current = nil
                 try? FileManager.default.removeItem(at: AudioRecorder.draftsDirectory)
                 // Удаление аккаунта и всех данных на сервере (DELETE /me).
                 Task {

@@ -4,6 +4,8 @@
 <dict>
 	<key>SCAPIBaseURL</key>
 	<string>$(SC_API_BASE_URL)</string>
+	<key>GIDClientID</key>
+	<string>$(SC_GOOGLE_CLIENT_ID)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -12,6 +14,14 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>speakcheck</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>kg.speakcheck.app.google</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>$(SC_GOOGLE_URL_SCHEME)</string>
 			</array>
 		</dict>
 	</array>

@@ -8,10 +8,10 @@ from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, Ou
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from core.errors import APIError
-from services import apple
+from services import apple, google
 
 from .models import User
-from .serializers import AppleAuthSerializer, UserSerializer
+from .serializers import AppleAuthSerializer, GoogleAuthSerializer, UserSerializer
 
 
 def tokens_for(user):
@@ -63,25 +63,48 @@ class AppleAuthView(APIView):
         except apple.AppleTokenError:
             raise APIError("invalid_apple_token", "Не удалось подтвердить вход через Apple.", 401)
 
-        sub = claims["sub"]
-        guest = request.user if (request.user and request.user.is_authenticated and request.user.is_guest) else None
+        return Response(tokens_for(sign_in(request, "apple_sub", claims["sub"], data.validated_data)))
 
-        with transaction.atomic():
-            user = User.objects.filter(apple_sub=sub).first()
-            if user is None and guest and data.validated_data["link_guest"]:
-                guest.apple_sub = sub
-                guest.is_guest = False
-                guest.save(update_fields=["apple_sub", "is_guest"])
-                user = guest
-            elif user is None:
-                user = User.objects.create_user(apple_sub=sub, locale=data.validated_data.get("locale", "ru"))
-            elif guest and data.validated_data["link_guest"] and guest.id != user.id:
-                from apps.reading.models import Document, ReadingAttempt
 
-                Document.objects.filter(user=guest).update(user=user)
-                ReadingAttempt.objects.filter(user=guest).update(user=user)
-                guest.delete()
-        return Response(tokens_for(user))
+class GoogleAuthView(APIView):
+    """POST /auth/google — вход по Google ID token с серверной проверкой (как /auth/apple)."""
+
+    permission_classes = [permissions.AllowAny]
+    throttle_classes = [AnonRateThrottle]
+
+    def post(self, request):
+        data = GoogleAuthSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        try:
+            claims = google.verify_id_token(data.validated_data["id_token"], data.validated_data["nonce"])
+        except google.GoogleTokenError:
+            raise APIError("invalid_google_token", "Не удалось подтвердить вход через Google.", 401)
+        return Response(tokens_for(sign_in(request, "google_sub", claims["sub"], data.validated_data)))
+
+
+def sign_in(request, field: str, sub: str, data: dict) -> User:
+    """Находит или создаёт аккаунт по идентификатору провайдера (apple_sub / google_sub).
+
+    Если запрос пришёл с токеном гостя и link_guest=true: гость сам становится этим аккаунтом,
+    либо его документы и попытки переносятся в уже существующий аккаунт.
+    """
+    guest = request.user if (request.user and request.user.is_authenticated and request.user.is_guest) else None
+    with transaction.atomic():
+        user = User.objects.filter(**{field: sub}).first()
+        if user is None and guest and data["link_guest"]:
+            setattr(guest, field, sub)
+            guest.is_guest = False
+            guest.save(update_fields=[field, "is_guest"])
+            user = guest
+        elif user is None:
+            user = User.objects.create_user(**{field: sub}, locale=data.get("locale", "ru"))
+        elif guest and data["link_guest"] and guest.id != user.id:
+            from apps.reading.models import Document, ReadingAttempt
+
+            Document.objects.filter(user=guest).update(user=user)
+            ReadingAttempt.objects.filter(user=guest).update(user=user)
+            guest.delete()
+    return user
 
 
 class LogoutView(APIView):

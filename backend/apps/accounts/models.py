@@ -13,10 +13,11 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    """Пользователь: вход через Apple или гостевой аккаунт устройства (без пароля)."""
+    """Пользователь: вход через Apple, Google или гостевой аккаунт устройства (без пароля)."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     apple_sub = models.CharField(max_length=255, unique=True, null=True, blank=True)
+    google_sub = models.CharField(max_length=255, unique=True, null=True, blank=True)
     is_guest = models.BooleanField(default=False)
     locale = models.CharField(max_length=16, default="ru")
     preferences = models.JSONField(default=dict, blank=True)

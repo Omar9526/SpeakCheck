@@ -110,6 +110,14 @@ actor APIClient {
         TokenStore.save(access: tokens.access, refresh: tokens.refresh)
     }
 
+    func signInWithGoogle(idToken: String, nonce: String) async throws {
+        struct Body: Encodable, Sendable { let idToken: String; let nonce: String; let linkGuest: Bool }
+        let tokens: AuthResponse = try await send("auth/google", method: "POST",
+                                                  body: try encoder.encode(Body(idToken: idToken, nonce: nonce, linkGuest: true)),
+                                                  contentType: "application/json", authorized: TokenStore.accessToken != nil)
+        TokenStore.save(access: tokens.access, refresh: tokens.refresh)
+    }
+
     /// Выход: сервер отзывает refresh-токен, затем токены стираются с устройства.
     func logout() async {
         if let refresh = TokenStore.refreshToken, TokenStore.accessToken != nil {

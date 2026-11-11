@@ -51,6 +51,7 @@ struct RootView: View {
             }
         }
         .onOpenURL { url in
+            if GoogleAuth.handle(url) { return }  // возврат из окна входа Google
             guard let code = DeepLink.challengeCode(from: url) else { return }
             Task { await openChallenge(code) }
         }

@@ -10,12 +10,19 @@ settings:
     SWIFT_VERSION: "6.0"
     MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: "1"
+packages:
+  GoogleSignIn:
+    url: https://github.com/google/GoogleSignIn-iOS
+    from: 9.0.0
 targets:
   SpeakCheck:
     type: application
     platform: iOS
     sources:
       - SpeakCheck
+    dependencies:
+      - package: GoogleSignIn
+        product: GoogleSignIn
     entitlements:
       path: SpeakCheck/Resources/SpeakCheck.entitlements
       properties:
@@ -40,6 +47,10 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         CODE_SIGN_STYLE: Automatic
         ENABLE_PREVIEWS: YES
+        # Google Sign-In: iOS OAuth Client ID из Google Cloud Console (не секрет).
+        # URL scheme — тот же ID задом наперёд: com.googleusercontent.apps.<число-хэш>
+        SC_GOOGLE_CLIENT_ID: ""
+        SC_GOOGLE_URL_SCHEME: "com.googleusercontent.apps.not-configured"
       configs:
         Debug:
           SC_API_BASE_URL: "https://213-109-67-14.sslip.io"

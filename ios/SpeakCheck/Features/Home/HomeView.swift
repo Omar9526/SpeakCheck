@@ -59,7 +59,7 @@ struct HomeView: View {
                 .font(.title.weight(.bold))
                 .foregroundStyle(Theme.Colors.textPrimary)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("Читайте свой ответ вслух — увидите, какие звуки вас выдают, и почему.")
+            Text("Читайте вслух — увидите, какие звуки вас выдают, и почему.")
                 .font(.subheadline)
                 .foregroundStyle(Theme.Colors.textSecondary)
         }
@@ -67,9 +67,9 @@ struct HomeView: View {
 
     private var headline: String {
         switch store.goal?.kind {
+        case .ielts: "Подготовка к IELTS Speaking"
         case .interview: "Подготовка к собеседованию на английском"
-        case .general: "Говорите по-английски увереннее"
-        default: "Подготовка к IELTS Speaking и собеседованиям"
+        default: "Говорите по-английски чисто и уверенно"
         }
     }
 
