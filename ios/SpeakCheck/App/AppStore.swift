@@ -189,6 +189,14 @@ final class AppStore {
     static func demo() -> AppStore {
         let store = AppStore(persists: false)
         store.documents = MockData.documents
+        store.documents.insert(SCDocument(
+            id: UUID(), title: "Three Things I Think About", source: .manual, status: .ready,
+            segments: [ReadingSegment(id: UUID(), sequence: 0, referenceText:
+                "I think three things matter most when I travel: a thoughtful plan, a thick warm jacket, and the patience to thank everyone who helps along the way.",
+                pageNumber: nil)],
+            createdAt: .now, bestScore: nil, completedSegments: 0,
+            practice: PracticeInfo(topic: "ielts", topicName: "IELTS", level: "B1", focusSound: "θ", focusExample: "think")),
+            at: 0)
         store.attempts = MockData.attempts
         store.hasCompletedOnboarding = true
         store.goal = PracticeGoal(kind: .ielts, date: Calendar.current.date(byAdding: .day, value: 24, to: .now), dailyTarget: 3)

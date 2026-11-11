@@ -7,7 +7,7 @@ xcrun simctl install $SIM ${0:A:h}/../build/Build/Products/Debug-iphonesimulator
 for s in "$@"; do
   xcrun simctl terminate $SIM kg.speakcheck.app 2>/dev/null
   case $s in
-    onboarding) xcrun simctl launch $SIM kg.speakcheck.app -AppleLanguages "(ru)" >/dev/null ;;
+    onboarding) xcrun simctl launch $SIM kg.speakcheck.app -sc.onboardingDone NO >/dev/null ;;
     home) xcrun simctl launch $SIM kg.speakcheck.app -demoData >/dev/null ;;
     *) xcrun simctl launch $SIM kg.speakcheck.app -demoData -screen $s >/dev/null ;;
   esac

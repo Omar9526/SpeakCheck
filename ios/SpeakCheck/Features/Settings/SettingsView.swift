@@ -92,8 +92,15 @@ struct SettingsView: View {
 
 private extension SettingsView {
     var accountHeader: some View {
-        let provider = SignInProvider.current
-        let profile = provider != nil ? AccountProfile.current : nil
+        var provider = SignInProvider.current
+        var profile = provider != nil ? AccountProfile.current : nil
+        #if DEBUG
+        // Скриншоты для App Store (-demoData): вымышленный профиль вместо настоящего аккаунта разработчика.
+        if ProcessInfo.processInfo.arguments.contains("-demoData") {
+            provider = .apple
+            profile = AccountProfile(name: "Айгерим Асанова", email: nil, avatarURL: nil)
+        }
+        #endif
         let title = profile?.name ?? provider?.title ?? "Гостевой режим"
         let subtitle: String = {
             guard let provider else { return "История привязана к этому iPhone — войдите, чтобы не потерять её" }

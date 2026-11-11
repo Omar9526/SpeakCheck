@@ -100,6 +100,10 @@ struct RootView: View {
         case "document": if let doc { router.homePath.append(Route.document(doc.id)) }
         case "reader": if let doc { router.homePath.append(Route.reader(documentID: doc.id, segmentIndex: 0)) }
         case "practice":
+            if let demo = store.documents.first(where: { $0.practice != nil }), args.contains("-demoData") {
+                router.homePath.append(Route.reader(documentID: demo.id, segmentIndex: 0))
+                return
+            }
             Task {
                 guard let dto = try? await PracticeService.next(topic: .ielts) else { return }
                 let doc = store.addPractice(dto)
