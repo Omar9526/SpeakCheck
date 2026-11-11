@@ -70,3 +70,20 @@ def test_preferences_patch_merges(api, user):
     api.patch("/api/v1/me", {"preferences": {"first_score_seconds": 30}}, format="json")
     r = api.patch("/api/v1/me", {"preferences": {"keep_audio": True}}, format="json")
     assert r.data["preferences"] == {"first_score_seconds": 30, "keep_audio": True}
+
+
+def test_users_command_lists_accounts(transactional_db):
+    from io import StringIO
+
+    from django.core.management import call_command
+
+    from apps.accounts.models import User
+
+    User.objects.create_user(google_sub="g1")
+    User.objects.create_user(apple_sub="a1")
+    User.objects.create_user(is_guest=True)
+    out = StringIO()
+    call_command("users", stdout=out)
+    text = out.getvalue()
+    assert "Всего аккаунтов: 3" in text and "Google: 1" in text and "Apple: 1" in text
+    assert text.count("Google ") >= 1 and "гость " not in text.split("\n", 2)[2]  # гость без попыток скрыт
