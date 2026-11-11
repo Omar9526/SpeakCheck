@@ -49,8 +49,8 @@ targets:
         ENABLE_PREVIEWS: YES
         # Google Sign-In: iOS OAuth Client ID из Google Cloud Console (не секрет).
         # URL scheme — тот же ID задом наперёд: com.googleusercontent.apps.<число-хэш>
-        SC_GOOGLE_CLIENT_ID: ""
-        SC_GOOGLE_URL_SCHEME: "com.googleusercontent.apps.not-configured"
+        SC_GOOGLE_CLIENT_ID: "98826537172-lu2ev5fbkrog220a346uvunsbuh3qh1u.apps.googleusercontent.com"
+        SC_GOOGLE_URL_SCHEME: "com.googleusercontent.apps.98826537172-lu2ev5fbkrog220a346uvunsbuh3qh1u"
       configs:
         Debug:
           SC_API_BASE_URL: "https://213-109-67-14.sslip.io"
