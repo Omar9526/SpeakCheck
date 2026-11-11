@@ -83,3 +83,26 @@ def test_deepseek_http_error_raises(settings):
     with mock.patch("services.deepseek.requests.post", return_value=mock.Mock(status_code=500)):
         with pytest.raises(deepseek.ExplanationError):
             deepseek.explain("Hello", {}, [])
+
+
+def _with_monotone(payload, prosody):
+    best = payload["NBest"][0]
+    best["PronunciationAssessment"]["ProsodyScore"] = prosody
+    for w in best["Words"]:
+        w["PronunciationAssessment"]["Feedback"] = {"Prosody": {"Intonation": {"ErrorTypes": ["Monotone"]}}}
+    return payload
+
+
+def test_monotone_hidden_when_intonation_is_good():
+    from services import azure_speech
+    from tests import azure_samples
+    a = azure_speech.normalize_short(_with_monotone(azure_samples.short_payload(), 91.5))
+    assert "Monotone" not in {w["error_type"] for w in a.words}
+    assert {w["word"]: w["error_type"] for w in a.words}["fun"] == "Mispronunciation"
+
+
+def test_monotone_kept_when_intonation_is_weak():
+    from services import azure_speech
+    from tests import azure_samples
+    a = azure_speech.normalize_short(_with_monotone(azure_samples.short_payload(), 55.0))
+    assert {w["word"]: w["error_type"] for w in a.words}["english"] == "Monotone"

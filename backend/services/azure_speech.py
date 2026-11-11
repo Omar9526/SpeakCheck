@@ -22,6 +22,9 @@ SCORE_VERSION_SHORT = "azure-pa-v1-scripted"
 SCORE_VERSION_CONTINUOUS = "azure-pa-v1-continuous"
 SHORT_MODE_MAX_MS = 30_000
 MIN_COMPLETENESS = 25.0  # ниже — речь не соответствует тексту
+# Azure ставит «Monotone» сразу всем словам фразы, даже при хорошей интонации.
+# Показываем пометку, только если интонация фразы действительно слабая.
+MONOTONE_PROSODY_MAX = 70.0
 
 ERROR_TYPES = {"None", "Omission", "Insertion", "Mispronunciation", "UnexpectedBreak", "MissingBreak", "Monotone"}
 
@@ -196,7 +199,16 @@ def normalize_short(payload: dict, reference_text: str = "") -> NormalizedAssess
     )
     if result.assessed_word_count == 0:
         raise AssessmentFailed("low_confidence")
+    _filter_monotone(result.words, result.prosody)
     return result
+
+
+def _filter_monotone(words: list[dict], prosody: float | None) -> None:
+    if prosody is not None and prosody < MONOTONE_PROSODY_MAX:
+        return
+    for w in words:
+        if w["error_type"] == "Monotone":
+            w["error_type"] = "None"
 
 
 def normalize_continuous(payloads: list[dict]) -> NormalizedAssessment:
@@ -227,12 +239,14 @@ def normalize_continuous(payloads: list[dict]) -> NormalizedAssessment:
             den += n
         return round(num / den, 1) if den else None
 
+    prosody = weighted("ProsodyScore")
+    _filter_monotone(words, prosody)
     return NormalizedAssessment(
         overall=weighted("PronScore"),
         accuracy=weighted("AccuracyScore"),
         fluency=weighted("FluencyScore"),
         completeness=None,
-        prosody=weighted("ProsodyScore"),
+        prosody=prosody,
         words=words,
         score_version=SCORE_VERSION_CONTINUOUS,
         raw=payloads,
