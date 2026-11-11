@@ -10,10 +10,14 @@ struct RemoteAssessmentService: AssessmentService {
                 onStatus: @escaping @Sendable (AssessmentStage) -> Void) async throws -> AssessmentOutcome {
         do {
             onStatus(.uploading)
-            try await sync(document)
+            let remote = try await sync(document)
+            // id фрагмента на сервере может отличаться от локального (см. RemoteDocumentIDs) — берём по позиции.
+            let index = document.segments.firstIndex { $0.id == draft.segmentID }
+            let segmentID = index.flatMap { remote.segments.indices.contains($0) ? remote.segments[$0].id : nil }
+                ?? draft.segmentID
             // Idempotency-Key = id черновика: повторная отправка той же записи не создаёт новую платную оценку.
             var attempt: AttemptDTO = try await api.upload(
-                "segments/\(draft.segmentID.uuidString.lowercased())/attempts",
+                "segments/\(segmentID.uuidString.lowercased())/attempts",
                 fileURL: draft.fileURL, field: "audio", mimeType: "audio/wav",
                 headers: ["Idempotency-Key": draft.id.uuidString]
             )
@@ -62,17 +66,27 @@ struct RemoteAssessmentService: AssessmentService {
         }
     }
 
-    /// Документ создаётся на сервере с теми же id; если текст правили — обновляем сегменты.
-    private func sync(_ doc: SCDocument) async throws {
-        let path = "documents/\(doc.id.uuidString.lowercased())"
-        let payload = DocumentPayload(document: doc)
+    /// Документ создаётся на сервере с тем же id, что и на iPhone. Если этот id уже занят другим аккаунтом
+    /// (например, вышли и вошли под другим), сервер выдаёт новый id — запоминаем соответствие.
+    private func sync(_ doc: SCDocument) async throws -> DocumentDTO {
+        let remoteID = RemoteDocumentIDs.server(for: doc.id)
+        let path = "documents/\(remoteID.uuidString.lowercased())"
         do {
             let remote: DocumentDTO = try await api.get(path)
-            let same = remote.segments.map { [$0.id.uuidString, $0.referenceText] } ==
-                doc.segments.map { [$0.id.uuidString, $0.referenceText] }
-            if !same { let _: DocumentDTO = try await api.patch(path, json: payload) }
+            guard remote.segments.map(\.referenceText) != doc.segments.map(\.referenceText) else { return remote }
+            // Текст правили — обновляем, сохраняя серверные id фрагментов по позиции.
+            let payload = DocumentPayload(document: doc, id: remote.id, segmentIDs: remote.segments.map(\.id))
+            return try await api.patch(path, json: payload)
         } catch APIClient.ClientError.server(_, let status) where status == 404 {
-            let _: DocumentDTO = try await api.post("documents", json: payload)
+            let created: DocumentDTO
+            do {
+                created = try await api.post("documents", json: DocumentPayload(document: doc))
+            } catch APIClient.ClientError.server(_, let status) where status == 400 {
+                // id занят чужим аккаунтом — пусть сервер выдаст новый.
+                created = try await api.post("documents", json: DocumentPayload(document: doc, id: nil, segmentIDs: []))
+            }
+            RemoteDocumentIDs.set(created.id, for: doc.id)
+            return created
         }
     }
 
@@ -105,24 +119,31 @@ struct RemoteAssessmentService: AssessmentService {
 
 private struct DocumentPayload: Encodable, Sendable {
     struct Segment: Encodable, Sendable {
-        let id: UUID
+        let id: UUID?
         let referenceText: String
         let pageNumber: Int?
     }
 
-    let id: UUID
+    let id: UUID?
     let filename: String
     let source: String
     let segments: [Segment]
     /// Документ из «Вызова другу» — сервер считает, сколько вызовов приняли.
     let challengeCode: String?
 
-    init(document: SCDocument) {
-        id = document.id
+    /// `id`/`segmentIDs` — серверные id (по позиции); nil/пусто — сервер сгенерирует свои.
+    init(document: SCDocument, id: UUID?? = .none, segmentIDs: [UUID]? = nil) {
+        switch id {
+        case .none: self.id = document.id          // не указан — локальный id
+        case .some(let value): self.id = value     // указан явно (nil — сервер выдаст свой)
+        }
         challengeCode = document.challenge?.code
         filename = String(document.title.prefix(255))
         source = document.source.rawValue
-        segments = document.segments.map { Segment(id: $0.id, referenceText: $0.referenceText, pageNumber: $0.pageNumber) }
+        segments = document.segments.enumerated().map { i, seg in
+            let sid: UUID? = if let segmentIDs { segmentIDs.indices.contains(i) ? segmentIDs[i] : nil } else { seg.id }
+            return Segment(id: sid, referenceText: seg.referenceText, pageNumber: seg.pageNumber)
+        }
     }
 }
 
@@ -179,4 +200,22 @@ struct ExplanationDTO: Decodable, Sendable {
     let tips: [TipItem]
     let encouragement: String
     let isFallback: Bool
+}
+
+
+/// Соответствие «id документа на iPhone → id на сервере». Обычно они совпадают; расходятся, если
+/// документ создавался под другим аккаунтом (выход и вход под другим).
+enum RemoteDocumentIDs {
+    private static let key = "sc.remoteDocumentIDs"
+
+    static func server(for local: UUID) -> UUID {
+        let map = UserDefaults.standard.dictionary(forKey: key) as? [String: String] ?? [:]
+        return map[local.uuidString].flatMap(UUID.init(uuidString:)) ?? local
+    }
+
+    static func set(_ remote: UUID, for local: UUID) {
+        var map = UserDefaults.standard.dictionary(forKey: key) as? [String: String] ?? [:]
+        map[local.uuidString] = remote == local ? nil : remote.uuidString
+        UserDefaults.standard.set(map, forKey: key)
+    }
 }
