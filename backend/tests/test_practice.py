@@ -150,3 +150,15 @@ def test_next_prefills_following_text(api, user, deepseek):
         _next(api)  # следующий берётся из заранее готового, сам запрос DeepSeek не ждёт
     assert PracticeServed.objects.filter(user=user).count() == 2
     assert deepseek.call_count == before + 1  # +1 — это уже подготовка следующего
+
+
+def test_prepared_text_used_even_if_focus_differs(api, user, deepseek):
+    """Готовый текст под другой слабый звук берётся сразу — без ожидания DeepSeek."""
+    for _ in range(3):
+        _assessment(user, 75, [{"phoneme": "θ", "score": 30}, {"phoneme": "r", "score": 40}])
+    level = practice.current_level(user)
+    ready = PracticeText.objects.create(level=level, topic="ielts", focus="r", title="Ready", text=GOOD["text"])
+    with mock.patch("services.practice.random.choice", return_value="θ"):
+        r = _next(api)
+    assert r.data["id"] == str(ready.id)
+    assert deepseek.call_count == 0

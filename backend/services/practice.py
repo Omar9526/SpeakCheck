@@ -98,13 +98,16 @@ def weak_sounds(user, limit: int = 3) -> list[str]:
 def next_text(user, topic: str) -> tuple[PracticeText, str]:
     level = current_level(user)
     weak = weak_sounds(user)
-    # Чаще всего — фокус на слабом звуке, иногда без фокуса, чтобы тексты были разнообразнее.
-    focus = random.choice(weak) if weak and random.random() < 0.75 else ""
     topic = topic if topic in TOPICS else "surprise"
     unseen = PracticeText.objects.exclude(served__user=user)
 
-    text = unseen.filter(level=level, topic=topic, focus=focus).order_by("?").first()
+    # Сначала — любой готовый непрочитанный текст этого уровня и темы: на слабый звук (чаще)
+    # или без фокуса. Новый текст пишем, только если готовых нет — иначе человек ждёт DeepSeek.
+    ready = unseen.filter(level=level, topic=topic, focus__in=weak + [""])
+    text = (ready.exclude(focus="").order_by("?").first() if weak and random.random() < 0.75 else None) \
+        or ready.order_by("?").first()
     if text is None:
+        focus = random.choice(weak) if weak and random.random() < 0.75 else ""
         try:
             text = _generate(level, topic, focus)
         except GenerationError as exc:
@@ -126,14 +129,14 @@ def prefill(user_id, topic: str) -> None:
     user = User.objects.filter(id=user_id).first()
     if user is None or topic not in TOPICS or not settings.DEEPSEEK_API_KEY:
         return
-    level = (user.preferences or {}).get("practice_level", "A2")
+    level = current_level(user)
     weak = weak_sounds(user)
-    focus = weak[0] if weak else ""
     unseen = PracticeText.objects.exclude(served__user=user).filter(level=level, topic=topic)
-    if unseen.filter(focus=focus).exists() and unseen.filter(focus="").exists():
-        return
+    if unseen.filter(focus__in=weak + [""]).count() >= 2:
+        return  # запас уже есть
+    focus = random.choice(weak) if weak and not unseen.filter(focus__in=weak).exists() else ""
     try:
-        _generate(level, topic, focus if not unseen.filter(focus=focus).exists() else "")
+        _generate(level, topic, focus)
     except GenerationError as exc:
         log.info("practice prefill skipped: %s", exc)
 
