@@ -26,7 +26,8 @@ struct WordDetailView: View {
     }
 
     private func content(word: WordAssessment, attempt: ReadingAttempt) -> some View {
-        let clean = word.word.trimmingCharacters(in: .punctuationCharacters)
+        let reference = store.documents.lazy.flatMap(\.segments).first { $0.id == attempt.segmentID }?.referenceText ?? ""
+        let clean = word.displayText(reference: reference).trimmingCharacters(in: .punctuationCharacters)
         let band: ScoreBand? = word.isOmitted ? .poor : word.score.map { ScoreBand(score: $0) }
         return ScrollView {
             VStack(alignment: .leading, spacing: Theme.Spacing.l) {

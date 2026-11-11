@@ -40,14 +40,15 @@ struct ResultView: View {
                 if let overall = assessment.overall {
                     shareCard(score: overall, assessment: assessment, doc: doc, text: segmentText, attempt: attempt)
                 }
-                wordsCard(assessment)
+                wordsCard(assessment, reference: segmentText)
                 explanationCard(assessment: assessment, text: segmentText)
 
                 HStack(spacing: Theme.Spacing.m) {
                     Button {
                         router.replaceTop(with: .reader(documentID: doc.id, segmentIndex: segmentIndex))
                     } label: {
-                        Label("Прочитать ещё раз", systemImage: "mic.fill")
+                        Label("Ещё раз", systemImage: "mic.fill")
+                            .lineLimit(1)
                     }
                     .buttonStyle(.primary)
 
@@ -56,6 +57,7 @@ struct ResultView: View {
                             router.replaceTop(with: .reader(documentID: doc.id, segmentIndex: segmentIndex + 1))
                         } label: {
                             Label("Дальше", systemImage: "arrow.right")
+                                .lineLimit(1)
                         }
                         .buttonStyle(.secondary)
                     }
@@ -179,7 +181,7 @@ struct ResultView: View {
 
     // MARK: Words
 
-    private func wordsCard(_ a: Assessment) -> some View {
+    private func wordsCard(_ a: Assessment, reference: String) -> some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             Text("Текст с анализом")
                 .font(.headline)
@@ -191,7 +193,7 @@ struct ResultView: View {
             }
             FlowLayout(spacing: 4, lineSpacing: 8) {
                 ForEach(a.words) { word in
-                    WordChip(word: word) {
+                    WordChip(word: word, text: word.displayText(reference: reference)) {
                         router.push(.wordDetail(attemptID: attemptID, wordIndex: word.index))
                     }
                 }
@@ -255,13 +257,14 @@ struct ResultView: View {
 /// Слово с цветовой подсветкой по оценке Azure; пропущенные — зачёркнуты.
 struct WordChip: View {
     var word: WordAssessment
+    var text: String
     var action: () -> Void
     /// «Без цвета» в настройках доступности: статус дублируется подчёркиванием.
     @Environment(\.accessibilityDifferentiateWithoutColor) private var withoutColor
 
     var body: some View {
         Button(action: action) {
-            Text(word.word)
+            Text(text)
                 .font(.body)
                 .strikethrough(word.isOmitted, color: Theme.Colors.danger)
                 .underline(withoutColor && !word.isOmitted && (band == .fair || band == .poor),
@@ -272,7 +275,7 @@ struct WordChip: View {
                 .background(RoundedRectangle(cornerRadius: 6).fill(background))
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(word.word)
+        .accessibilityLabel(text)
         .accessibilityValue(accessibilityValue)
         .accessibilityHint("Открыть разбор слова")
     }

@@ -93,6 +93,17 @@ struct WordAssessment: Identifiable, Hashable, Codable, Sendable {
     var phonemes: [PhonemeAssessment]?
 
     var isOmitted: Bool { errorType == .omission }
+
+    /// Azure возвращает слова в нижнем регистре. Показываем как в исходном тексте:
+    /// «I», «English», «The» в начале предложения.
+    func displayText(reference: String) -> String {
+        let tokens = reference.split { !($0.isLetter || $0.isNumber || $0 == "'" || $0 == "’") }.map(String.init)
+        let key = word.lowercased()
+        if tokens.indices.contains(index), tokens[index].lowercased() == key { return tokens[index] }
+        let matches = tokens.filter { $0.lowercased() == key }
+        if matches.contains(key) || matches.isEmpty { return key == "i" ? "I" : word }
+        return matches[0]
+    }
 }
 
 /// Метрики Azure. `nil` — показатель не вернулся, в UI показываем «Недоступно».

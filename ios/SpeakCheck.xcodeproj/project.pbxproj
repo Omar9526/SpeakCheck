@@ -20,6 +20,7 @@
 		261D6F60706C659A576B3E93 /* StarterTexts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D4C7F117AE3E8F8A2B6631 /* StarterTexts.swift */; };
 		27E61F3D7D6255A74D765210 /* TextSegmenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88BC8287160B478F647E5C5D /* TextSegmenter.swift */; };
 		2844D68378F19884C13C4132 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726C25A999811B4A1710583C /* ShareSheet.swift */; };
+		28B1128AF38F0389790F3A9E /* WordCasingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1089234EF59C6ADD9CEAD43 /* WordCasingTests.swift */; };
 		293092EC3F8D7FFF5955CB73 /* ImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DFF44F90136037896AEF28 /* ImportView.swift */; };
 		39E76ADAB6FDEA64E83E85B5 /* PracticeGoal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DA70A5D04D41C71957F923 /* PracticeGoal.swift */; };
 		3C1CDFB3390B1C4793CEE29F /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01347A85A0F4A2EAF60C2858 /* ResultView.swift */; };
@@ -121,6 +122,7 @@
 		C1D5C1ECBEC519A3BEC78C1D /* AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
 		C21E60806D6756A4B76B5F3C /* TokenStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStore.swift; sourceTree = "<group>"; };
 		CB1CB60120B7E3827BCAE0E0 /* WordDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordDetailView.swift; sourceTree = "<group>"; };
+		D1089234EF59C6ADD9CEAD43 /* WordCasingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordCasingTests.swift; sourceTree = "<group>"; };
 		D1B814D2464E228392CA9B35 /* DailyPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyPlan.swift; sourceTree = "<group>"; };
 		E44439719636B9E1937637AD /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		F3B7F4E95BF5A0FDE986049A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -324,6 +326,7 @@
 			children = (
 				F641FDA5D15B510BBE1CC2F7 /* ScoringTests.swift */,
 				1E23D6AF1C58D6CC9D678FDB /* TextImportTests.swift */,
+				D1089234EF59C6ADD9CEAD43 /* WordCasingTests.swift */,
 				30F6A7FDA0C14380EB609DD5 /* Fixtures */,
 			);
 			path = SpeakCheckTests;
@@ -534,6 +537,7 @@
 			files = (
 				F9092500EF70DAEBD7269A54 /* ScoringTests.swift in Sources */,
 				B4996D0FB93BD4FCA9CFBDD1 /* TextImportTests.swift in Sources */,
+				28B1128AF38F0389790F3A9E /* WordCasingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
