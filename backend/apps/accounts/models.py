@@ -18,6 +18,9 @@ class User(AbstractBaseUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     apple_sub = models.CharField(max_length=255, unique=True, null=True, blank=True)
     google_sub = models.CharField(max_length=255, unique=True, null=True, blank=True)
+    # Из аккаунта Apple/Google — чтобы видеть, кто зарегистрировался, и связаться при необходимости.
+    email = models.EmailField(max_length=254, blank=True, default="")
+    name = models.CharField(max_length=150, blank=True, default="")
     is_guest = models.BooleanField(default=False)
     locale = models.CharField(max_length=16, default="ru")
     preferences = models.JSONField(default=dict, blank=True)

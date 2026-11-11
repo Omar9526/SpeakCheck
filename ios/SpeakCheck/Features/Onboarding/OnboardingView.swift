@@ -47,7 +47,7 @@ struct OnboardingView: View {
 
                 VStack(spacing: Theme.Spacing.m) {
                     SignInWithAppleButton(.signIn) { request in
-                        request.requestedScopes = [.fullName]
+                        request.requestedScopes = [.fullName, .email]
                         appleNonce = AppleNonce.make()
                         request.nonce = AppleNonce.sha256(appleNonce)
                     } onCompletion: { result in
@@ -119,7 +119,7 @@ extension OnboardingView {
             .flatMap { $0.trimmingCharacters(in: .whitespaces).isEmpty ? nil : $0 }
         Task {
             do {
-                try await APIClient.shared.signInWithApple(identityToken: token, nonce: nonce)
+                try await APIClient.shared.signInWithApple(identityToken: token, nonce: nonce, fullName: fullName)
                 SignInProvider.current = .apple
                 if let fullName { AccountProfile.current = AccountProfile(name: fullName) }
                 store.hasCompletedOnboarding = true

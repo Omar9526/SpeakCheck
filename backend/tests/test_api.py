@@ -338,3 +338,13 @@ def test_challenge_landing_escapes_html(api, user):
     Challenge.objects.create(code="xss12345", owner=user, title="t", reference_text="<script>alert(1)</script>", owner_score=50)
     body = APIClient().get("/c/xss12345").content.decode()
     assert "<script>alert" not in body and "&lt;script&gt;" in body
+
+
+def test_apple_saves_name_from_app_and_verified_email(api, user):
+    claims = {"sub": "apple-9", "email": "x@privaterelay.appleid.com", "email_verified": "true"}
+    with mock.patch("services.apple.verify_identity_token", return_value=claims):
+        r = api.post("/api/v1/auth/apple", {"identity_token": "x", "nonce": "n", "full_name": "Омар Кубатов"},
+                     format="json")
+    assert r.status_code == 200
+    user.refresh_from_db()
+    assert (user.name, user.email) == ("Омар Кубатов", "x@privaterelay.appleid.com")

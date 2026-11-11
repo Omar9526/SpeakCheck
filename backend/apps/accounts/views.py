@@ -63,7 +63,10 @@ class AppleAuthView(APIView):
         except apple.AppleTokenError:
             raise APIError("invalid_apple_token", "Не удалось подтвердить вход через Apple.", 401)
 
-        return Response(tokens_for(sign_in(request, "apple_sub", claims["sub"], data.validated_data)))
+        user = sign_in(request, "apple_sub", claims["sub"], data.validated_data)
+        update_contact(user, email=claims.get("email") if _verified(claims) else None,
+                       name=data.validated_data.get("full_name"))
+        return Response(tokens_for(user))
 
 
 class GoogleAuthView(APIView):
@@ -79,7 +82,26 @@ class GoogleAuthView(APIView):
             claims = google.verify_id_token(data.validated_data["id_token"], data.validated_data["nonce"])
         except google.GoogleTokenError:
             raise APIError("invalid_google_token", "Не удалось подтвердить вход через Google.", 401)
-        return Response(tokens_for(sign_in(request, "google_sub", claims["sub"], data.validated_data)))
+        user = sign_in(request, "google_sub", claims["sub"], data.validated_data)
+        update_contact(user, email=claims.get("email") if _verified(claims) else None, name=claims.get("name"))
+        return Response(tokens_for(user))
+
+
+def _verified(claims: dict) -> bool:
+    # Apple присылает "true" строкой, Google — булевым значением.
+    return str(claims.get("email_verified", "")).lower() == "true"
+
+
+def update_contact(user: User, email: str | None, name: str | None) -> None:
+    """Имя и email берутся из проверенного токена (имя Apple — от приложения); пустые значения не затирают старые."""
+    fields = []
+    if email and len(email) <= 254 and email != user.email:
+        user.email, fields = email, fields + ["email"]
+    name = (name or "").strip()[:150]
+    if name and name != user.name:
+        user.name, fields = name, fields + ["name"]
+    if fields:
+        user.save(update_fields=fields)
 
 
 def sign_in(request, field: str, sub: str, data: dict) -> User:

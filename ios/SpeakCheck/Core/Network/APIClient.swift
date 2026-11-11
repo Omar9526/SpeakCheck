@@ -101,11 +101,11 @@ actor APIClient {
         TokenStore.save(access: tokens.access, refresh: tokens.refresh)
     }
 
-    func signInWithApple(identityToken: String, nonce: String) async throws {
-        struct Body: Encodable, Sendable { let identityToken: String; let nonce: String; let linkGuest: Bool }
+    func signInWithApple(identityToken: String, nonce: String, fullName: String? = nil) async throws {
+        struct Body: Encodable, Sendable { let identityToken: String; let nonce: String; let linkGuest: Bool; let fullName: String? }
         // Если есть гостевой токен — сервер перенесёт данные гостя в Apple-аккаунт.
         let tokens: AuthResponse = try await send("auth/apple", method: "POST",
-                                                  body: try encoder.encode(Body(identityToken: identityToken, nonce: nonce, linkGuest: true)),
+                                                  body: try encoder.encode(Body(identityToken: identityToken, nonce: nonce, linkGuest: true, fullName: fullName)),
                                                   contentType: "application/json", authorized: TokenStore.accessToken != nil)
         TokenStore.save(access: tokens.access, refresh: tokens.refresh)
     }

@@ -84,7 +84,8 @@ enum SignInProvider: String {
     var shortName: String { self == .apple ? "Apple" : "Google" }
 }
 
-/// Имя, email и фото из аккаунта Apple/Google — только на этом iPhone, на сервер не отправляются.
+/// Имя, email и фото из аккаунта Apple/Google для шапки профиля. Сервер получает имя и email
+/// из проверенного токена (фото — нет).
 struct AccountProfile: Codable, Sendable {
     var name: String?
     var email: String?

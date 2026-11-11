@@ -1,7 +1,6 @@
 """Список аккаунтов: python manage.py users [--limit 30] [--all-guests].
 
-Сервер хранит только идентификатор входа (без имени и email), поэтому аккаунт
-показывается коротким ID, способом входа и активностью.
+Имя и email — из аккаунта Apple/Google (у гостей их нет).
 """
 from django.core.management.base import BaseCommand
 from django.db.models import Count, Max, Q
@@ -37,10 +36,10 @@ class Command(BaseCommand):
                               last=Max("attempts__created_at")).order_by("-created_at")
         if not all_guests:
             rows = rows.filter(Q(is_guest=False) | Q(tries__gt=0))
-        self.stdout.write(f"{'ID':<10} {'вход':<7} {'создан':<17} {'текстов':>7} {'попыток':>7}  последняя попытка")
+        self.stdout.write(f"{'ID':<10} {'вход':<7} {'имя':<22} {'email':<30} {'создан':<17} {'попыток':>7}  последняя")
         for u in rows[:limit]:
             last = u.last.strftime("%d.%m.%Y %H:%M") if u.last else "—"
-            self.stdout.write(f"{str(u.id)[:8]:<10} {provider(u):<7} {u.created_at:%d.%m.%Y %H:%M} "
-                              f"{u.docs:>7} {u.tries:>7}  {last}")
+            self.stdout.write(f"{str(u.id)[:8]:<10} {provider(u):<7} {(u.name or '—')[:22]:<22} "
+                              f"{(u.email or '—')[:30]:<30} {u.created_at:%d.%m.%Y %H:%M} {u.tries:>7}  {last}")
         if not all_guests:
             self.stdout.write("\n(гости без попыток скрыты — добавьте --all-guests)")

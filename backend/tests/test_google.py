@@ -95,3 +95,27 @@ def test_cannot_set_google_sub_via_profile(api, user):
     api.patch("/api/v1/me", {"google_sub": "victim"}, format="json")
     user.refresh_from_db()
     assert user.google_sub is None
+
+
+def test_verified_email_and_name_saved(google_key, transactional_db):
+    _post(APIClient(), _token(google_key, email="ann@gmail.com", email_verified=True, name="Ann Lee"))
+    u = User.objects.get(google_sub="google-sub-1")
+    assert (u.email, u.name) == ("ann@gmail.com", "Ann Lee")
+
+
+def test_unverified_email_not_saved(google_key, transactional_db):
+    _post(APIClient(), _token(google_key, email="fake@corp.com", email_verified=False, name="X"))
+    assert User.objects.get(google_sub="google-sub-1").email == ""
+
+
+def test_relogin_without_name_keeps_old_values(google_key, transactional_db):
+    _post(APIClient(), _token(google_key, email="ann@gmail.com", email_verified=True, name="Ann Lee"))
+    _post(APIClient(), _token(google_key))
+    u = User.objects.get(google_sub="google-sub-1")
+    assert (u.email, u.name) == ("ann@gmail.com", "Ann Lee")
+
+
+def test_contact_fields_not_editable_via_profile(api, user):
+    api.patch("/api/v1/me", {"email": "victim@x.com", "name": "Hacker"}, format="json")
+    user.refresh_from_db()
+    assert (user.email, user.name) == ("", "")

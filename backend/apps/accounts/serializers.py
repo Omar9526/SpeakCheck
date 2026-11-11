@@ -46,6 +46,8 @@ class AppleAuthSerializer(serializers.Serializer):
     locale = serializers.ChoiceField(choices=["ru", "en", "ky"], required=False)
     # Гостевой аккаунт, данные которого нужно перенести в Apple-аккаунт.
     link_guest = serializers.BooleanField(default=True)
+    # Apple отдаёт имя только приложению и только при первом входе.
+    full_name = serializers.CharField(max_length=150, required=False, allow_blank=True, trim_whitespace=True)
 
 
 class GoogleAuthSerializer(serializers.Serializer):
