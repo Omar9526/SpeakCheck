@@ -80,7 +80,7 @@ struct RemoteAssessmentService: AssessmentService {
         } catch APIClient.ClientError.server(_, let status) where status == 404 {
             let created: DocumentDTO
             do {
-                created = try await api.post("documents", json: DocumentPayload(document: doc))
+                created = try await api.post("documents", json: DocumentPayload(document: doc, id: doc.id, segmentIDs: nil))
             } catch APIClient.ClientError.server(_, let status) where status == 400 {
                 // id занят чужим аккаунтом — пусть сервер выдаст новый.
                 created = try await api.post("documents", json: DocumentPayload(document: doc, id: nil, segmentIDs: []))
@@ -117,7 +117,7 @@ struct RemoteAssessmentService: AssessmentService {
 
 // MARK: DTO
 
-private struct DocumentPayload: Encodable, Sendable {
+struct DocumentPayload: Encodable, Sendable {
     struct Segment: Encodable, Sendable {
         let id: UUID?
         let referenceText: String
@@ -131,12 +131,10 @@ private struct DocumentPayload: Encodable, Sendable {
     /// Документ из «Вызова другу» — сервер считает, сколько вызовов приняли.
     let challengeCode: String?
 
-    /// `id`/`segmentIDs` — серверные id (по позиции); nil/пусто — сервер сгенерирует свои.
-    init(document: SCDocument, id: UUID?? = .none, segmentIDs: [UUID]? = nil) {
-        switch id {
-        case .none: self.id = document.id          // не указан — локальный id
-        case .some(let value): self.id = value     // указан явно (nil — сервер выдаст свой)
-        }
+    /// `id` — id документа на сервере (nil — сервер выдаст свой).
+    /// `segmentIDs` — серверные id фрагментов по позиции; nil — локальные id, пустой массив — сервер выдаст свои.
+    init(document: SCDocument, id: UUID?, segmentIDs: [UUID]?) {
+        self.id = id
         challengeCode = document.challenge?.code
         filename = String(document.title.prefix(255))
         source = document.source.rawValue

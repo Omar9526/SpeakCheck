@@ -33,6 +33,7 @@
 		539AABB93AAB4009AB70DC29 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC82F4F4122512EDBAB7FEF2 /* Theme.swift */; };
 		5465F32D1C317033E62FAB6C /* RemoteDocumentIDsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9526F96317A4892A708ABC0 /* RemoteDocumentIDsTests.swift */; };
 		670633C2E76BE8B43B97F73E /* WordDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CB60120B7E3827BCAE0E0 /* WordDetailView.swift */; };
+		6D3D3718F058BA2A91681989 /* DocumentPayloadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E037C2E73841CEF338DDA721 /* DocumentPayloadTests.swift */; };
 		6D81072B0058CD6A491B7819 /* DailyPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B814D2464E228392CA9B35 /* DailyPlan.swift */; };
 		6ECA3C7F98C7358BCF4A38E5 /* ProfileSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0580095B912E173DA3FE015E /* ProfileSync.swift */; };
 		76E1FAC7BC9BE00FDF664FAD /* Cards.swift in Sources */ = {isa = PBXBuildFile; fileRef = A85410364B5B5FAFB0A215C7 /* Cards.swift */; };
@@ -129,6 +130,7 @@
 		D1089234EF59C6ADD9CEAD43 /* WordCasingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordCasingTests.swift; sourceTree = "<group>"; };
 		D1B814D2464E228392CA9B35 /* DailyPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyPlan.swift; sourceTree = "<group>"; };
 		D9526F96317A4892A708ABC0 /* RemoteDocumentIDsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDocumentIDsTests.swift; sourceTree = "<group>"; };
+		E037C2E73841CEF338DDA721 /* DocumentPayloadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentPayloadTests.swift; sourceTree = "<group>"; };
 		E44439719636B9E1937637AD /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		F3B7F4E95BF5A0FDE986049A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		F543CB6C7EB7076AE4DF01A0 /* SpeakCheck.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SpeakCheck.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -340,6 +342,7 @@
 		BD37A563876B5FD0E8932211 /* SpeakCheckTests */ = {
 			isa = PBXGroup;
 			children = (
+				E037C2E73841CEF338DDA721 /* DocumentPayloadTests.swift */,
 				D9526F96317A4892A708ABC0 /* RemoteDocumentIDsTests.swift */,
 				F641FDA5D15B510BBE1CC2F7 /* ScoringTests.swift */,
 				1E23D6AF1C58D6CC9D678FDB /* TextImportTests.swift */,
@@ -558,6 +561,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D3D3718F058BA2A91681989 /* DocumentPayloadTests.swift in Sources */,
 				5465F32D1C317033E62FAB6C /* RemoteDocumentIDsTests.swift in Sources */,
 				F9092500EF70DAEBD7269A54 /* ScoringTests.swift in Sources */,
 				B4996D0FB93BD4FCA9CFBDD1 /* TextImportTests.swift in Sources */,
