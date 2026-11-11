@@ -5,6 +5,7 @@ struct TasksView: View {
     @Environment(AppStore.self) private var store
     @Environment(Router.self) private var router
     @State private var editingGoal: PracticeGoal?
+    @State private var launcher = PracticeLauncher()
 
     private var tasks: [DailyPlan.Task] {
         DailyPlan.tasks(goal: store.goal, documents: store.documents, attempts: store.attempts)
@@ -19,6 +20,8 @@ struct TasksView: View {
                                  ?? PracticeGoal(kind: kind ?? .ielts, date: nil)
                          },
                          onPractice: { start(tasks.first { !$0.isComplete } ?? tasks[0]) })
+
+                PracticeCard()
 
                 let list = tasks
                 let completed = list.filter(\.isComplete).count
@@ -113,6 +116,7 @@ struct TasksView: View {
             router.push(.reader(documentID: doc.id, segmentIndex: 0))
         case .newAnswer:
             if let id = task.starterID, let starter = StarterTexts.all.first(where: { $0.id == id }) { open(starter) }
+            else { launcher.start(topic: PracticeTopic.default(for: store.goal?.kind), store: store, router: router) }
         }
     }
 

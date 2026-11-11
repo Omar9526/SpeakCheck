@@ -75,6 +75,7 @@ REST_FRAMEWORK = {
         "attempts": env("THROTTLE_ATTEMPTS", default="20/min"),
         "explanations": env("THROTTLE_EXPLANATIONS", default="20/min"),
         "speech": env("THROTTLE_SPEECH", default="60/min"),
+        "practice": env("THROTTLE_PRACTICE", default="30/min"),
     },
     "UNAUTHENTICATED_USER": None,
 }

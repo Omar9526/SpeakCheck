@@ -132,3 +132,34 @@ class Challenge(models.Model):
     owner_score = models.FloatField(null=True)
     opened_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class PracticeText(models.Model):
+    """Текст для бесконечной тренировки: сгенерирован DeepSeek (или из запасного набора).
+
+    Общий пул: тексты переиспользуются между пользователями с тем же уровнем, темой и звуком,
+    поэтому DeepSeek вызывается только когда подходящего непрочитанного текста нет.
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    level = models.CharField(max_length=4)
+    topic = models.CharField(max_length=16)
+    focus = models.CharField(max_length=16, blank=True)  # IPA-звук, например "θ"; пусто — без фокуса
+    title = models.CharField(max_length=80)
+    text = models.TextField()
+    source = models.CharField(max_length=16, default="ai")  # ai | bank
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [models.Index(fields=["level", "topic", "focus"])]
+
+
+class PracticeServed(models.Model):
+    """Какие тексты уже выданы пользователю — чтобы не повторяться."""
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="practice_served")
+    text = models.ForeignKey(PracticeText, on_delete=models.CASCADE, related_name="served")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["user", "text"], name="uniq_practice_served")]

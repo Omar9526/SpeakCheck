@@ -60,6 +60,9 @@ struct ResultView: View {
                                 .lineLimit(1)
                         }
                         .buttonStyle(.secondary)
+                    } else {
+                        // Текст закончился — тренировка продолжается новым текстом.
+                        NewPracticeButton(topic: doc.practice.flatMap { PracticeTopic(rawValue: $0.topic) } ?? .last)
                     }
                 }
             }

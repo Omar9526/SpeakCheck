@@ -91,6 +91,12 @@ struct RootView: View {
         case "review": if let doc { router.homePath.append(Route.textReview(documentID: doc.id)) }
         case "document": if let doc { router.homePath.append(Route.document(doc.id)) }
         case "reader": if let doc { router.homePath.append(Route.reader(documentID: doc.id, segmentIndex: 0)) }
+        case "practice":
+            Task {
+                guard let dto = try? await PracticeService.next(topic: .ielts) else { return }
+                let doc = store.addPractice(dto)
+                router.homePath.append(Route.reader(documentID: doc.id, segmentIndex: 0))
+            }
         case "starter":
             let starter = store.starterDocument(StarterTexts.all[0])
             router.homePath.append(Route.reader(documentID: starter.id, segmentIndex: 0))

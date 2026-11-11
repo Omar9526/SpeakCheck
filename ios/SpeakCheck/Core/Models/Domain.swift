@@ -44,6 +44,8 @@ struct SCDocument: Identifiable, Hashable, Codable, Sendable {
     var completedSegments: Int
     /// Документ создан из вызова друга — для сравнения результатов.
     var challenge: ChallengeInfo? = nil
+    /// Текст из бесконечной тренировки (написан под уровень и слабые звуки).
+    var practice: PracticeInfo? = nil
 
     var progress: Double {
         guard !segments.isEmpty else { return 0 }
@@ -167,4 +169,14 @@ struct ChallengeInfo: Hashable, Codable, Sendable {
     var referenceText: String
     var ownerScore: Double?
     var url: URL
+}
+
+
+/// Чем текст тренировки отличается от обычного: тема, уровень и звук, на который он нацелен.
+struct PracticeInfo: Hashable, Codable, Sendable {
+    var topic: String
+    var topicName: String
+    var level: String
+    var focusSound: String?
+    var focusExample: String?
 }

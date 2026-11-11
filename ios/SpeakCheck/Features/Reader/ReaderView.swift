@@ -68,10 +68,13 @@ struct ReaderView: View {
     private func content(_ doc: SCDocument, segment: ReadingSegment) -> some View {
         VStack(spacing: Theme.Spacing.l) {
             VStack(alignment: .leading, spacing: Theme.Spacing.s) {
-                Text("\(segmentIndex + 1) из \(doc.segments.count) фрагментов")
+                Text(doc.practice != nil ? "Тренировка · \(doc.title)" : "\(segmentIndex + 1) из \(doc.segments.count) фрагментов")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Theme.Colors.accentLight)
                 ThinProgress(value: Double(segmentIndex + 1) / Double(max(doc.segments.count, 1)))
+                if let info = doc.practice {
+                    PracticeFocusBanner(info: info)
+                }
             }
 
             ScrollView {

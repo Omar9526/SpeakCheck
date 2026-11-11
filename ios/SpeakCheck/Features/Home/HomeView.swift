@@ -15,6 +15,8 @@ struct HomeView: View {
                     starterSection
                 }
 
+                PracticeCard()
+
                 GoalCard(goal: store.goal, attempts: store.attempts,
                          onEdit: { kind in
                              editingGoal = store.goal.map { var g = $0; g.kind = kind ?? $0.kind; return g }
@@ -135,14 +137,14 @@ struct HomeView: View {
     private var recentSection: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             SectionHeader(title: "Мои документы")
-            if store.documents.isEmpty {
+            if !store.documents.contains(where: { $0.practice == nil }) {
                 EmptyStateView(
                     icon: "doc.text.magnifyingglass",
                     title: "Пока пусто",
                     message: "Загрузите PDF, Word, TXT или фото текста — или начните с готового текста выше."
                 )
             } else {
-                ForEach(store.documents.prefix(5)) { doc in
+                ForEach(store.documents.filter { $0.practice == nil }.prefix(5)) { doc in
                     Button { router.push(.document(doc.id)) } label: {
                         DocumentRow(document: doc)
                     }

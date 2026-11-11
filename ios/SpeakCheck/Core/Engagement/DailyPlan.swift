@@ -46,12 +46,13 @@ enum DailyPlan {
         let starterTitles = Set(StarterTexts.all.map(\.title))
         let answerDone = todayDocs.contains { id in
             guard let doc = docsByID[id] else { return false }
-            return starterTitles.contains(doc.title)
+            return starterTitles.contains(doc.title) || doc.practice != nil
         }
+        // Готовые ответы закончились — дальше бесконечная тренировка: план никогда не пустеет.
         let next = nextStarter(goal: goal?.kind, documents: documents)
         result.append(Task(kind: .newAnswer,
-                           title: "Готовый ответ дня",
-                           detail: next?.title ?? "Все ответы пройдены — загрузите свой текст",
+                           title: next != nil ? "Готовый ответ дня" : "Новый текст от тренера",
+                           detail: next?.title ?? "Персональный текст под ваши ошибки и уровень",
                            done: answerDone ? 1 : 0, target: 1, starterID: next?.id))
         return result
     }

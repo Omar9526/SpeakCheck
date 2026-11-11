@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import challenges, speech, views
+from . import challenges, practice, speech, views
 
 urlpatterns = [
     path("documents", views.DocumentListCreateView.as_view()),
@@ -10,6 +10,7 @@ urlpatterns = [
     path("assessments/<uuid:assessment_id>/explanation", views.ExplanationView.as_view()),
     path("history", views.HistoryView.as_view()),
     path("speech", speech.SpeechView.as_view()),
+    path("practice/next", practice.PracticeNextView.as_view()),
     path("challenges", challenges.ChallengeCreateView.as_view()),
     path("challenges/<str:code>", challenges.ChallengeDetailView.as_view()),
 ]

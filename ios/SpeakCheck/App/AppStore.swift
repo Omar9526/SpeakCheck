@@ -72,7 +72,7 @@ final class AppStore {
     /// Последний документ, который не дочитан, — для карточки «Продолжить чтение».
     var continueDocument: SCDocument? {
         documents
-            .filter { $0.status == .ready && $0.completedSegments < $0.segments.count }
+            .filter { $0.status == .ready && $0.practice == nil && $0.completedSegments < $0.segments.count }
             .max { $0.createdAt < $1.createdAt }
     }
 
