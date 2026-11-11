@@ -10,6 +10,10 @@ enum RussianPlural {
         form(n, one: "фрагмент", few: "фрагмента", many: "фрагментов")
     }
 
+    static func recordings(_ n: Int) -> String {
+        form(n, one: "запись", few: "записи", many: "записей")
+    }
+
     static func form(_ n: Int, one: String, few: String, many: String) -> String {
         let mod10 = n % 10, mod100 = n % 100
         if mod10 == 1 && mod100 != 11 { return one }

@@ -78,6 +78,8 @@ struct SettingsView: View {
                 if SignInProvider.current == .google { GoogleAuth.signOut() }
                 SignInProvider.current = nil
                 try? FileManager.default.removeItem(at: AudioRecorder.draftsDirectory)
+                PendingUploads.shared.clear()
+                PracticeStock.shared.clear()
                 // Удаление аккаунта и всех данных на сервере (DELETE /me).
                 Task {
                     if TokenStore.accessToken != nil { try? await APIClient.shared.delete("me") }

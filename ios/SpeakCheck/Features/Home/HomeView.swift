@@ -11,6 +11,8 @@ struct HomeView: View {
                 header
 
                 // Первая оценка — за минуту: готовые тексты выше цели и загрузки (условие совета).
+                PendingUploadsBanner()
+
                 if store.attempts.isEmpty {
                     starterSection
                 }

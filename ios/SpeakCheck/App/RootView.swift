@@ -6,6 +6,7 @@ struct RootView: View {
     @Environment(\.assessmentService) private var service
     @State private var linkError: String?
     @State private var debugShareCard = false
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         @Bindable var router = router
@@ -41,6 +42,13 @@ struct RootView: View {
             }
         }
         .animation(.easeInOut, value: store.hasCompletedOnboarding)
+        .task {
+            PendingUploads.shared.start(store: store)
+            PracticeStock.shared.refill(topic: PracticeTopic.default(for: store.goal?.kind))
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { PendingUploads.shared.sendAll() }
+        }
         .overlay {
             if debugShareCard {
                 ZStack {

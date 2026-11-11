@@ -149,6 +149,7 @@ struct ProcessingView: View {
                 )
                 store.record(attempt)
                 deleteDraft() // По умолчанию аудио удаляется после анализа (ТЗ, раздел 11).
+                PendingUploads.shared.remove(draft.id)
                 router.replaceTop(with: .result(attemptID: attempt.id))
             } catch is CancellationError {
                 return
@@ -159,11 +160,14 @@ struct ProcessingView: View {
             } catch {
                 failure = .serviceUnavailable
             }
+            // Сеть или сервис недоступны — запись в очереди, отправится сама.
+            if let failure, failure.canResend { PendingUploads.shared.add(draft) }
         }
     }
 
     private func deleteDraft() {
         try? FileManager.default.removeItem(at: draft.fileURL)
+        PendingUploads.shared.remove(draft.id)
     }
 }
 

@@ -159,3 +159,54 @@ struct PracticeFocusBanner: View {
         .accessibilityElement(children: .combine)
     }
 }
+
+/// На главной: записи ждут отправки или уже отправлены в фоне.
+struct PendingUploadsBanner: View {
+    @Environment(Router.self) private var router
+    private var pending = PendingUploads.shared
+
+    var body: some View {
+        if !pending.drafts.isEmpty {
+            HStack(spacing: Theme.Spacing.m) {
+                Image(systemName: pending.isSending ? "arrow.up.circle" : "icloud.and.arrow.up")
+                    .font(.title3)
+                    .foregroundStyle(Theme.Colors.warning)
+                    .symbolEffect(.pulse, isActive: pending.isSending)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(pending.isSending ? "Отправляем записи…"
+                         : "Ждут отправки: \(pending.drafts.count) \(RussianPlural.recordings(pending.drafts.count))")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Theme.Colors.textPrimary)
+                    Text("Отправятся сами, когда появится интернет")
+                        .font(.caption)
+                        .foregroundStyle(Theme.Colors.textSecondary)
+                }
+                Spacer(minLength: 0)
+                if !pending.isSending {
+                    Button("Отправить") { pending.sendAll() }
+                        .font(.subheadline.weight(.semibold))
+                }
+            }
+            .card(padding: Theme.Spacing.m, radius: Theme.Radius.medium)
+        } else if pending.sentInBackground > 0 {
+            Button {
+                pending.sentInBackground = 0
+                router.tab = .progress
+            } label: {
+                HStack(spacing: Theme.Spacing.m) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.title3)
+                        .foregroundStyle(Theme.Colors.success)
+                    Text("Оценки готовы: \(pending.sentInBackground) \(RussianPlural.recordings(pending.sentInBackground)) — смотреть в «Прогрессе»")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Theme.Colors.textPrimary)
+                        .multilineTextAlignment(.leading)
+                    Spacer(minLength: 0)
+                    Image(systemName: "chevron.right").foregroundStyle(Theme.Colors.textTertiary)
+                }
+                .card(padding: Theme.Spacing.m, radius: Theme.Radius.medium)
+            }
+            .buttonStyle(.plain)
+        }
+    }
+}

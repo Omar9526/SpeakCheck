@@ -37,7 +37,9 @@ cd SpeakCheck && git pull && cd deploy && docker compose up -d --build
 |---|---|
 | Логи API | `docker compose logs -f web` |
 | Логи оценки | `docker compose logs -f worker` |
-| Бэкап БД | `docker compose exec db pg_dump -U speakcheck speakcheck > backup.sql` |
+| Бэкап БД (автоматически каждую ночь, 14 дней) | `./backup.sh` → `~/backups/`; cron: `crontab -l` |
+| Восстановление | `gunzip -c ~/backups/ФАЙЛ.sql.gz \| docker compose exec -T db psql -U speakcheck speakcheck` |
+| Список аккаунтов | `docker compose exec -T web python manage.py users` |
 | Проверка настроек | `docker compose exec web python manage.py check --deploy` |
 
 ## После деплоя

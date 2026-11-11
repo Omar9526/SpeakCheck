@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import Observation
 
 /// Локальное хранилище документов и попыток (гостевой режим / офлайн-кеш).
@@ -179,7 +180,7 @@ final class AppStore {
             try data.write(to: fileURL, options: [.atomic, .completeFileProtection])
         } catch {
             // Логи без содержимого документов (ТЗ, раздел 11).
-            print("AppStore save failed: \(type(of: error))")
+            Logger.auth.error("AppStore save failed: \(String(describing: type(of: error)), privacy: .public)")
         }
     }
 

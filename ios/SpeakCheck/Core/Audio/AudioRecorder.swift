@@ -1,4 +1,4 @@
-import AVFoundation
+@preconcurrency import AVFoundation
 import Observation
 
 /// Запись голоса для оценки: AVAudioEngine → конвертация в WAV PCM 16 кГц / 16 бит / mono

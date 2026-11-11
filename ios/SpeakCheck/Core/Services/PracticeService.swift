@@ -38,7 +38,7 @@ enum PracticeTopic: String, CaseIterable, Identifiable, Sendable {
     }
 }
 
-struct PracticeTextDTO: Decodable, Sendable {
+struct PracticeTextDTO: Codable, Sendable {
     let id: UUID
     let title: String
     let text: String
@@ -53,11 +53,22 @@ enum PracticeService {
     /// Последний известный уровень — для подписи на главной.
     static var level: String? { UserDefaults.standard.string(forKey: "sc.practiceLevel") }
 
+    /// Следующий текст: из запаса на iPhone (мгновенно, без сети), иначе — с сервера.
+    @MainActor
     static func next(topic: PracticeTopic) async throws -> PracticeTextDTO {
-        let dto: PracticeTextDTO = try await APIClient.shared.post("practice/next", json: ["topic": topic.rawValue])
-        UserDefaults.standard.set(dto.level, forKey: "sc.practiceLevel")
         PracticeTopic.last = topic
+        let dto: PracticeTextDTO
+        if let stocked = PracticeStock.shared.take(topic) {
+            dto = stocked
+        } else {
+            dto = try await fetch(topic: topic)
+        }
+        UserDefaults.standard.set(dto.level, forKey: "sc.practiceLevel")
         return dto
+    }
+
+    static func fetch(topic: PracticeTopic) async throws -> PracticeTextDTO {
+        try await APIClient.shared.post("practice/next", json: ["topic": topic.rawValue])
     }
 }
 
@@ -71,5 +82,57 @@ extension AppStore {
             createdAt: .now, bestScore: nil, completedSegments: 0,
             practice: PracticeInfo(topic: dto.topic, topicName: dto.topicName, level: dto.level,
                                    focusSound: dto.focusSound, focusExample: dto.focusExample)))
+    }
+}
+
+
+/// Запас текстов тренировки на iPhone: «Новый текст» открывается мгновенно и работает без интернета
+/// (в метро можно читать и записывать — оценки придут, когда появится сеть).
+@MainActor
+final class PracticeStock {
+    static let shared = PracticeStock()
+    static let target = 3
+
+    private let key = "sc.practiceStock"
+    private var stock: [String: [PracticeTextDTO]]
+    private var refilling: Set<String> = []
+
+    private init() {
+        stock = UserDefaults.standard.data(forKey: key)
+            .flatMap { try? JSONDecoder().decode([String: [PracticeTextDTO]].self, from: $0) } ?? [:]
+    }
+
+    func count(_ topic: PracticeTopic) -> Int { stock[topic.rawValue]?.count ?? 0 }
+
+    /// Берёт текст из запаса (если есть) и сразу начинает пополнять запас.
+    func take(_ topic: PracticeTopic) -> PracticeTextDTO? {
+        defer { refill(topic: topic) }
+        guard var list = stock[topic.rawValue], !list.isEmpty else { return nil }
+        let text = list.removeFirst()
+        stock[topic.rawValue] = list
+        save()
+        return text
+    }
+
+    func refill(topic: PracticeTopic) {
+        guard APIClient.baseURL != nil, !refilling.contains(topic.rawValue), count(topic) < Self.target else { return }
+        refilling.insert(topic.rawValue)
+        Task {
+            defer { refilling.remove(topic.rawValue) }
+            while count(topic) < Self.target {
+                guard let dto = try? await PracticeService.fetch(topic: topic) else { return }  // нет сети — позже
+                stock[topic.rawValue, default: []].append(dto)
+                save()
+            }
+        }
+    }
+
+    func clear() {
+        stock = [:]
+        save()
+    }
+
+    private func save() {
+        UserDefaults.standard.set(try? JSONEncoder().encode(stock), forKey: key)
     }
 }
