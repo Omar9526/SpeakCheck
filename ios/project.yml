@@ -27,6 +27,8 @@ targets:
       path: SpeakCheck/Resources/SpeakCheck.entitlements
       properties:
         com.apple.developer.applesignin: [Default]
+        # Ссылки-вызовы https://<домен>/c/<код> открывают приложение (файл AASA отдаёт сервер).
+        com.apple.developer.associated-domains: ["applinks:213-109-67-14.sslip.io"]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: kg.speakcheck.app
@@ -46,6 +48,7 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: 7HRHQX7J58
         ENABLE_PREVIEWS: YES
         # Google Sign-In: iOS OAuth Client ID из Google Cloud Console (не секрет).
         # URL scheme — тот же ID задом наперёд: com.googleusercontent.apps.<число-хэш>

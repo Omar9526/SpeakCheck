@@ -526,6 +526,7 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					D2731B4F463B7E71EBF71470 = {
+						DevelopmentTeam = 7HRHQX7J58;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -786,6 +787,7 @@
 				CODE_SIGN_ENTITLEMENTS = SpeakCheck/Resources/SpeakCheck.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 7HRHQX7J58;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SpeakCheck/Resources/Info.plist;
@@ -820,6 +822,7 @@
 				CODE_SIGN_ENTITLEMENTS = SpeakCheck/Resources/SpeakCheck.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 7HRHQX7J58;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SpeakCheck/Resources/Info.plist;

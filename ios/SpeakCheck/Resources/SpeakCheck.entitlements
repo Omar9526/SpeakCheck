@@ -6,5 +6,9 @@
 	<array>
 		<string>Default</string>
 	</array>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:213-109-67-14.sslip.io</string>
+	</array>
 </dict>
 </plist>
