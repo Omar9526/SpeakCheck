@@ -136,5 +136,14 @@ def fallback(words: list[dict]) -> dict:
                          "explanation": "Послушайте образец и сравните со своей записью."
                                         + (f" Сложнее всего дались звуки {sounds}." if sounds else ""),
                          "exercise": "Повторите слово 3 раза медленно, затем в предложении."})
-    return {"summary": f"Обратите внимание на {len(tips)} слов(а).", "tips": tips,
+    return {"summary": f"Обратите внимание на {len(tips)} {_words_ru(len(tips))}.", "tips": tips,
             "encouragement": "Каждая попытка делает произношение увереннее!"}
+
+
+def _words_ru(n: int) -> str:
+    """1 слово, 2 слова, 5 слов, 11 слов, 21 слово."""
+    if n % 10 == 1 and n % 100 != 11:
+        return "слово"
+    if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14:
+        return "слова"
+    return "слов"

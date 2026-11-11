@@ -106,3 +106,9 @@ def test_monotone_kept_when_intonation_is_weak():
     from tests import azure_samples
     a = azure_speech.normalize_short(_with_monotone(azure_samples.short_payload(), 55.0))
     assert {w["word"]: w["error_type"] for w in a.words}["english"] == "Monotone"
+
+
+def test_fallback_summary_plural():
+    from services.deepseek import _words_ru
+    assert [_words_ru(n) for n in (1, 2, 4, 5, 11, 12, 21, 22, 25)] == [
+        "слово", "слова", "слова", "слов", "слов", "слов", "слово", "слова", "слов"]
