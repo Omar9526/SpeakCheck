@@ -15,7 +15,6 @@ class FakeResponse:
 def azure(settings):
     settings.AZURE_SPEECH_KEY = "k"
     settings.AZURE_SPEECH_REGION = "westeurope"
-    settings.AZURE_TTS_VOICE = "en-US-AvaMultilingualNeural"
 
 
 def test_not_configured_returns_503(api):
@@ -70,7 +69,7 @@ def test_provider_error_not_cached(api, azure):
 @pytest.fixture
 def eleven(settings):
     settings.ELEVENLABS_API_KEY = "xi"
-    settings.ELEVENLABS_VOICE_ID = "voice123"
+    settings.ELEVENLABS_VOICES = {"bella": "voice123", "matilda": "voice456", "eric": "voice789"}
     settings.ELEVENLABS_MODEL = "eleven_multilingual_v2"
 
 
@@ -84,16 +83,21 @@ def test_elevenlabs_preferred_over_azure(api, azure, eleven):
     assert kwargs["json"] == {"text": "Hello", "model_id": "eleven_multilingual_v2", "voice_settings": {"speed": 0.8}}
 
 
-def test_voice_change_is_new_cache_entry(api, eleven, settings):
+def test_each_voice_cached_separately(api, eleven):
     with mock.patch("services.tts.requests.post", return_value=FakeResponse()) as post:
-        api.post("/api/v1/speech", {"text": "Hello"}, format="json")
-        settings.ELEVENLABS_VOICE_ID = "other"
-        api.post("/api/v1/speech", {"text": "Hello"}, format="json")
+        api.post("/api/v1/speech", {"text": "Hello", "voice": "bella"}, format="json")
+        api.post("/api/v1/speech", {"text": "Hello", "voice": "eric"}, format="json")
+        api.post("/api/v1/speech", {"text": "Hello", "voice": "eric"}, format="json")
     assert post.call_count == 2
+    assert post.call_args.args[0].endswith("/text-to-speech/voice789")
 
 
-def test_voice_id_cannot_escape_path(api, eleven, settings):
-    settings.ELEVENLABS_VOICE_ID = "../v1/user"
+def test_unknown_voice_rejected(api, eleven):
+    r = api.post("/api/v1/speech", {"text": "Hello", "voice": "../v1/user"}, format="json")
+    assert r.status_code == 400
+
+
+def test_azure_fallback_keeps_voice_gender(api, azure):
     with mock.patch("services.tts.requests.post", return_value=FakeResponse()) as post:
-        api.post("/api/v1/speech", {"text": "Hello"}, format="json")
-    assert post.call_args.args[0].endswith("/text-to-speech/..%2Fv1%2Fuser")
+        api.post("/api/v1/speech", {"text": "Hello", "voice": "eric"}, format="json")
+    assert "en-US-AndrewMultilingualNeural" in post.call_args.kwargs["data"].decode()

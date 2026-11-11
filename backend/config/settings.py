@@ -124,13 +124,20 @@ SUPPORT_EMAIL = env("SUPPORT_EMAIL", default="")
 AZURE_SPEECH_KEY = env("AZURE_SPEECH_KEY", default="")
 AZURE_SPEECH_REGION = env("AZURE_SPEECH_REGION", default="")
 AZURE_LOCALE = env("AZURE_LOCALE", default="en-US")
-# Голос для «Послушать». Самые естественные — HD (например "en-US-Ava:DragonHDLatestNeural"),
-# но они есть не во всех регионах; по умолчанию — нейросетевой голос, доступный везде.
-AZURE_TTS_VOICE = env("AZURE_TTS_VOICE", default="en-US-AvaMultilingualNeural")
-
-# ElevenLabs — если ключ задан, «Послушать» озвучивает он (живее Azure).
+# Голоса для «Послушать»: пользователь выбирает один из трёх в профиле.
+# ElevenLabs (если задан ключ) — основной; Azure — запасной, с похожим голосом того же пола.
 ELEVENLABS_API_KEY = env("ELEVENLABS_API_KEY", default="")
-ELEVENLABS_VOICE_ID = env("ELEVENLABS_VOICE_ID", default="JBFqnCBsd6RMkjVDRZzb")
+ELEVENLABS_VOICES = {
+    "bella": env("ELEVENLABS_VOICE_BELLA", default="hpp4J3VqNfWAUOO0d1Us"),
+    "matilda": env("ELEVENLABS_VOICE_MATILDA", default="XrExE9yKIg1WjnnlVkGX"),
+    "eric": env("ELEVENLABS_VOICE_ERIC", default="cjVigY5qzO86Huf0OWal"),
+}
+AZURE_TTS_VOICES = {
+    "bella": "en-US-AvaMultilingualNeural",
+    "matilda": "en-US-EmmaMultilingualNeural",
+    "eric": "en-US-AndrewMultilingualNeural",
+}
+DEFAULT_TTS_VOICE = "bella"
 ELEVENLABS_MODEL = env("ELEVENLABS_MODEL", default="eleven_multilingual_v2")
 
 # DeepSeek

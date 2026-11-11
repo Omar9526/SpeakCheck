@@ -12,6 +12,7 @@ from services import tts
 class SpeechRequestSerializer(serializers.Serializer):
     text = serializers.CharField(max_length=settings.MAX_SEGMENT_CHARS, trim_whitespace=True)
     slow = serializers.BooleanField(default=False)
+    voice = serializers.ChoiceField(choices=list(settings.ELEVENLABS_VOICES), default=settings.DEFAULT_TTS_VOICE)
 
 
 class SpeechView(APIView):
@@ -22,7 +23,7 @@ class SpeechView(APIView):
         s = SpeechRequestSerializer(data=request.data)
         s.is_valid(raise_exception=True)
         try:
-            audio = tts.synthesize(s.validated_data["text"], s.validated_data["slow"])
+            audio = tts.synthesize(**s.validated_data)
         except tts.SynthesisFailed as e:
             raise APIError(e.code, "Озвучка сейчас недоступна.", 503) from e
         response = HttpResponse(audio, content_type="audio/mpeg")

@@ -5,6 +5,9 @@ struct SettingsView: View {
     @AppStorage("sc.keepAudio") private var keepAudio = false
     @AppStorage("sc.explanationLanguage") private var explanationLanguage = "ru"
     @AppStorage("sc.voiceConsent") private var voiceConsent = false
+    @AppStorage(ReferenceVoice.storageKey) private var referenceVoice = ReferenceVoice.bella.rawValue
+    @State private var speech = SpeechPlayer()
+    @State private var previewing: ReferenceVoice?
     @State private var confirmErase = false
 
     var body: some View {
@@ -30,6 +33,16 @@ struct SettingsView: View {
                     Text("English").tag("en")
                 }
                 LabeledContent("Язык чтения", value: "English")
+            }
+
+            Section {
+                ForEach(ReferenceVoice.allCases) { voice in
+                    voiceRow(voice)
+                }
+            } header: {
+                Text("Голос образца")
+            } footer: {
+                Text("Этим голосом звучит «Послушать» — как правильно произносить фрагмент или слово.")
             }
 
             Section {
@@ -71,6 +84,46 @@ struct SettingsView: View {
                 }
             }
         }
+    }
+}
+
+private extension SettingsView {
+    func voiceRow(_ voice: ReferenceVoice) -> some View {
+        let selected = referenceVoice == voice.rawValue
+        let playing = previewing == voice && speech.isSpeaking
+        return HStack(spacing: Theme.Spacing.m) {
+            Button {
+                referenceVoice = voice.rawValue
+            } label: {
+                HStack(spacing: Theme.Spacing.m) {
+                    Image(systemName: selected ? "checkmark.circle.fill" : "circle")
+                        .font(.title3)
+                        .foregroundStyle(selected ? Theme.Colors.accentLight : Theme.Colors.textTertiary)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(voice.name).font(.body.weight(.semibold)).foregroundStyle(Theme.Colors.textPrimary)
+                        Text(voice.detail).font(.caption).foregroundStyle(Theme.Colors.textSecondary)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityAddTraits(selected ? .isSelected : [])
+
+            Button {
+                if playing { speech.stop() } else {
+                    previewing = voice
+                    speech.speak(ReferenceVoice.sample, voice: voice)
+                }
+            } label: {
+                Image(systemName: playing ? "stop.circle.fill" : "play.circle.fill")
+                    .font(.title2)
+                    .foregroundStyle(Theme.Colors.accentLight)
+            }
+            .buttonStyle(.borderless)
+            .accessibilityLabel(playing ? "Остановить" : "Прослушать \(voice.name)")
+        }
+        .padding(.vertical, 2)
     }
 }
 

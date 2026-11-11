@@ -2,6 +2,27 @@ import AVFoundation
 import CryptoKit
 import Observation
 
+/// Голос образца — пользователь выбирает в профиле.
+enum ReferenceVoice: String, CaseIterable, Identifiable, Sendable {
+    case bella, matilda, eric
+
+    static let storageKey = "sc.referenceVoice"
+    static var current: ReferenceVoice {
+        UserDefaults.standard.string(forKey: storageKey).flatMap(ReferenceVoice.init(rawValue:)) ?? .bella
+    }
+
+    var id: String { rawValue }
+    var name: String { rawValue.capitalized }
+    var detail: String {
+        switch self {
+        case .bella: "Женский, тёплый"
+        case .matilda: "Женский, деловой"
+        case .eric: "Мужской, спокойный"
+        }
+    }
+    static let sample = "I have been working as a software developer for three years, and I really enjoy solving difficult problems."
+}
+
 /// Эталонное произношение. Основной путь — живой нейросетевой голос Azure через наш сервер
 /// (MP3 кэшируется и на сервере, и на устройстве). Без сервера или при ошибке —
 /// лучший системный голос iPhone, чтобы кнопка «Послушать» работала всегда.
@@ -19,7 +40,7 @@ final class SpeechPlayer: NSObject {
         synthesizer.delegate = self
     }
 
-    func speak(_ text: String, slow: Bool = false) {
+    func speak(_ text: String, slow: Bool = false, voice: ReferenceVoice = .current) {
         stop()
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio, options: [.duckOthers])
         try? AVAudioSession.sharedInstance().setActive(true)
@@ -28,7 +49,7 @@ final class SpeechPlayer: NSObject {
         guard APIClient.baseURL != nil else { return speakLocally(text, slow: slow) }
         isLoading = true
         loadTask = Task {
-            let data = await Self.neuralAudio(text, slow: slow)
+            let data = await Self.neuralAudio(text, slow: slow, voice: voice)
             guard !Task.isCancelled else { return }
             isLoading = false
             if let data, let player = try? AVAudioPlayer(data: data) {
@@ -53,19 +74,19 @@ final class SpeechPlayer: NSObject {
 
     // MARK: Живой голос (сервер → Azure)
 
-    private struct Body: Encodable, Sendable { let text: String; let slow: Bool }
+    private struct Body: Encodable, Sendable { let text: String; let slow: Bool; let voice: String }
 
-    private static func neuralAudio(_ text: String, slow: Bool) async -> Data? {
-        let file = cacheURL(text: text, slow: slow)
+    private static func neuralAudio(_ text: String, slow: Bool, voice: ReferenceVoice) async -> Data? {
+        let file = cacheURL(text: text, slow: slow, voice: voice)
         if let cached = try? Data(contentsOf: file) { return cached }
-        guard let data = try? await APIClient.shared.postForData("speech", json: Body(text: text, slow: slow)),
+        guard let data = try? await APIClient.shared.postForData("speech", json: Body(text: text, slow: slow, voice: voice.rawValue)),
               !data.isEmpty else { return nil }
         try? data.write(to: file, options: .atomic)
         return data
     }
 
-    private static func cacheURL(text: String, slow: Bool) -> URL {
-        let digest = SHA256.hash(data: Data("\(slow ? 1 : 0)|\(text)".utf8)).map { String(format: "%02x", $0) }.joined()
+    private static func cacheURL(text: String, slow: Bool, voice: ReferenceVoice) -> URL {
+        let digest = SHA256.hash(data: Data("\(voice.rawValue)|\(slow ? 1 : 0)|\(text)".utf8)).map { String(format: "%02x", $0) }.joined()
         let folder = URL.cachesDirectory.appending(path: "speech", directoryHint: .isDirectory)
         try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         return folder.appending(path: "\(digest).mp3")
