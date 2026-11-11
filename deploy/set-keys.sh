@@ -24,6 +24,7 @@ echo "Вставьте ключ (Cmd+V) и нажмите Enter. Символы 
 ask AZURE_SPEECH_KEY "Azure Speech KEY 1" secret
 ask AZURE_SPEECH_REGION "Azure регион (например westeurope)"
 ask DEEPSEEK_API_KEY "DeepSeek API key" secret
+ask ELEVENLABS_API_KEY "ElevenLabs API key (живой голос; Enter — пропустить)" secret
 chmod 600 "$ENV"
 
 echo "Перезапуск сервера..."

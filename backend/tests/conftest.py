@@ -23,6 +23,7 @@ def _private_storage(settings, tmp_path):
     settings.PRIVATE_STORAGE_ROOT = tmp_path / "private"
     settings.AZURE_SPEECH_KEY = ""
     settings.DEEPSEEK_API_KEY = ""
+    settings.ELEVENLABS_API_KEY = ""
     settings.REST_FRAMEWORK = {**settings.REST_FRAMEWORK, "DEFAULT_THROTTLE_CLASSES": []}
 
 

@@ -65,3 +65,35 @@ def test_provider_error_not_cached(api, azure):
     with mock.patch("services.tts.requests.post", return_value=FakeResponse()) as post:
         assert api.post("/api/v1/speech", {"text": "Hi"}, format="json").status_code == 200
     assert post.call_count == 1
+
+
+@pytest.fixture
+def eleven(settings):
+    settings.ELEVENLABS_API_KEY = "xi"
+    settings.ELEVENLABS_VOICE_ID = "voice123"
+    settings.ELEVENLABS_MODEL = "eleven_multilingual_v2"
+
+
+def test_elevenlabs_preferred_over_azure(api, azure, eleven):
+    with mock.patch("services.tts.requests.post", return_value=FakeResponse()) as post:
+        r = api.post("/api/v1/speech", {"text": "Hello", "slow": True}, format="json")
+    assert r.status_code == 200
+    args, kwargs = post.call_args
+    assert args[0] == "https://api.elevenlabs.io/v1/text-to-speech/voice123"
+    assert kwargs["headers"]["xi-api-key"] == "xi"
+    assert kwargs["json"] == {"text": "Hello", "model_id": "eleven_multilingual_v2", "voice_settings": {"speed": 0.8}}
+
+
+def test_voice_change_is_new_cache_entry(api, eleven, settings):
+    with mock.patch("services.tts.requests.post", return_value=FakeResponse()) as post:
+        api.post("/api/v1/speech", {"text": "Hello"}, format="json")
+        settings.ELEVENLABS_VOICE_ID = "other"
+        api.post("/api/v1/speech", {"text": "Hello"}, format="json")
+    assert post.call_count == 2
+
+
+def test_voice_id_cannot_escape_path(api, eleven, settings):
+    settings.ELEVENLABS_VOICE_ID = "../v1/user"
+    with mock.patch("services.tts.requests.post", return_value=FakeResponse()) as post:
+        api.post("/api/v1/speech", {"text": "Hello"}, format="json")
+    assert post.call_args.args[0].endswith("/text-to-speech/..%2Fv1%2Fuser")

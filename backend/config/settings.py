@@ -128,6 +128,11 @@ AZURE_LOCALE = env("AZURE_LOCALE", default="en-US")
 # но они есть не во всех регионах; по умолчанию — нейросетевой голос, доступный везде.
 AZURE_TTS_VOICE = env("AZURE_TTS_VOICE", default="en-US-AvaMultilingualNeural")
 
+# ElevenLabs — если ключ задан, «Послушать» озвучивает он (живее Azure).
+ELEVENLABS_API_KEY = env("ELEVENLABS_API_KEY", default="")
+ELEVENLABS_VOICE_ID = env("ELEVENLABS_VOICE_ID", default="JBFqnCBsd6RMkjVDRZzb")
+ELEVENLABS_MODEL = env("ELEVENLABS_MODEL", default="eleven_multilingual_v2")
+
 # DeepSeek
 DEEPSEEK_API_KEY = env("DEEPSEEK_API_KEY", default="")
 DEEPSEEK_MODEL = env("DEEPSEEK_MODEL", default="deepseek-flash")
