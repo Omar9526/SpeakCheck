@@ -1,4 +1,5 @@
 import AuthenticationServices
+import OSLog
 import SwiftUI
 
 struct OnboardingView: View {
@@ -46,7 +47,7 @@ struct OnboardingView: View {
 
                 VStack(spacing: Theme.Spacing.m) {
                     SignInWithAppleButton(.signIn) { request in
-                        request.requestedScopes = []
+                        request.requestedScopes = [.fullName]
                         appleNonce = AppleNonce.make()
                         request.nonce = AppleNonce.sha256(appleNonce)
                     } onCompletion: { result in
@@ -114,10 +115,13 @@ extension OnboardingView {
         }
         let nonce = appleNonce
         appleNonce = ""
+        let fullName = credential.fullName.flatMap { PersonNameComponentsFormatter().string(from: $0) }
+            .flatMap { $0.trimmingCharacters(in: .whitespaces).isEmpty ? nil : $0 }
         Task {
             do {
                 try await APIClient.shared.signInWithApple(identityToken: token, nonce: nonce)
                 SignInProvider.current = .apple
+                if let fullName { AccountProfile.current = AccountProfile(name: fullName) }
                 store.hasCompletedOnboarding = true
             } catch {
                 signInError = true
@@ -135,7 +139,9 @@ extension OnboardingView {
                 store.hasCompletedOnboarding = true
             } catch where GoogleAuth.isCancellation(error) {
                 // Пользователь закрыл окно Google — остаёмся на экране без ошибки.
+                Logger.auth.info("google sign-in cancelled")
             } catch {
+                Logger.auth.error("google sign-in failed: \(String(describing: error), privacy: .public)")
                 signInError = true
             }
         }
@@ -162,4 +168,8 @@ struct BrandMark: View {
 
 #Preview {
     OnboardingView().environment(AppStore(persists: false))
+}
+
+extension Logger {
+    static let auth = Logger(subsystem: "kg.speakcheck.app", category: "auth")
 }

@@ -9,22 +9,14 @@ struct SettingsView: View {
     @State private var speech = SpeechPlayer()
     @State private var previewing: ReferenceVoice?
     @State private var confirmErase = false
+    @State private var profileVersion = 0  // перерисовать шапку после восстановления профиля
 
     var body: some View {
         List {
             Section {
-                HStack(spacing: Theme.Spacing.m) {
-                    IconTile(systemName: "person.fill", size: 48)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(SignInProvider.current?.title ?? "Гостевой режим")
-                            .font(.headline)
-                            .foregroundStyle(Theme.Colors.textPrimary)
-                        Text(SignInProvider.current != nil ? "История сохраняется в аккаунте" : "История привязана к этому iPhone — войдите, чтобы не потерять её")
-                            .font(.caption)
-                            .foregroundStyle(Theme.Colors.textSecondary)
-                    }
-                }
-                .padding(.vertical, 4)
+                accountHeader
+                    .id(profileVersion)
+                    .padding(.vertical, 4)
             }
 
             Section("Обучение") {
@@ -67,6 +59,12 @@ struct SettingsView: View {
                 Text("SpeakCheck \(Bundle.main.appVersion) · Оценки — учебный ориентир, а не сертифицированный тест CEFR.")
             }
         }
+        .task {
+            guard SignInProvider.current == .google, AccountProfile.current == nil,
+                  let profile = await GoogleAuth.restoreProfile() else { return }
+            AccountProfile.current = profile
+            profileVersion += 1
+        }
         .scrollContentBackground(.hidden)
         .screenBackground()
         .navigationTitle("Профиль")
@@ -91,6 +89,58 @@ struct SettingsView: View {
 }
 
 private extension SettingsView {
+    var accountHeader: some View {
+        let provider = SignInProvider.current
+        let profile = provider != nil ? AccountProfile.current : nil
+        let title = profile?.name ?? provider?.title ?? "Гостевой режим"
+        let subtitle: String = {
+            guard let provider else { return "История привязана к этому iPhone — войдите, чтобы не потерять её" }
+            let via = "Через \(provider.shortName)"
+            if let email = profile?.email { return "\(via) · \(email)" }
+            return profile?.name != nil ? via : "История сохраняется в аккаунте"
+        }()
+        return HStack(spacing: Theme.Spacing.m) {
+            avatar(profile)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(Theme.Colors.textPrimary)
+                    .lineLimit(1)
+                Text(subtitle)
+                    .font(.caption)
+                    .foregroundStyle(Theme.Colors.textSecondary)
+                    .lineLimit(2)
+            }
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    @ViewBuilder
+    func avatar(_ profile: AccountProfile?) -> some View {
+        let placeholder = Group {
+            if let initials = profile?.initials, !initials.isEmpty {
+                Text(initials)
+                    .font(.headline)
+                    .foregroundStyle(Theme.Colors.accentLight)
+                    .frame(width: 48, height: 48)
+                    .background(Theme.Colors.accentLight.opacity(0.15), in: Circle())
+            } else {
+                IconTile(systemName: "person.fill", size: 48)
+            }
+        }
+        if let raw = profile?.avatarURL, let url = URL(string: raw) {
+            AsyncImage(url: url) { image in
+                image.resizable().scaledToFill()
+            } placeholder: {
+                placeholder
+            }
+            .frame(width: 48, height: 48)
+            .clipShape(Circle())
+        } else {
+            placeholder
+        }
+    }
+
     func voiceRow(_ voice: ReferenceVoice) -> some View {
         let selected = referenceVoice == voice.rawValue
         let playing = previewing == voice && speech.isSpeaking
